@@ -1,11 +1,36 @@
 {
-  "name": "@accessible360/accessible-slick",
+  "name": "@ivcreative/accessible-vanilla-slick",
   "version": "1.0.1",
-  "description": "the last (accessible) carousel you'll ever need",
-  "main": "slick/slick.js",
+  "description": "WCAG 2.2 compliant vanilla ES6 carousel - the last (accessible) carousel you'll ever need",
+  "license": "MIT",
+  "main": "slick/dist/slick.js",
+  "module": "slick/dist/slick.esm.mjs",
+  "style": "slick/dist/slick.min.css",
+  "jsdelivr": "slick/dist/slick.min.js",
+  "unpkg": "slick/dist/slick.min.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "slick/dist",
+    "slick/dist/fonts",
+    "README.markdown",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Accessible360/accessible-slick.git"
+    "url": "https://github.com/ivcreative/accessible-vanilla-slick.git"
+  },
+  "scripts": {
+    "clean": "rimraf slick/dist/*.min.css slick/dist/*.min.js",
+    "build:css": "sass --style=compressed slick/slick.scss:slick/dist/slick.min.css slick/slick-theme.scss:slick/dist/slick-theme.min.css slick/accessible-slick-theme.scss:slick/dist/accessible-slick-theme.min.css",
+    "build:js": "esbuild slick/dist/slick.js --minify --outfile=slick/dist/slick.min.js",
+    "build": "npm run clean && npm run build:css && npm run build:js",
+    "prepublishOnly": "npm run build",
+    "pack:check": "npm pack --dry-run",
+    "watch:css": "sass --watch --style=compressed slick/slick.scss:slick/dist/slick.min.css slick/slick-theme.scss:slick/dist/slick-theme.min.css slick/accessible-slick-theme.scss:slick/dist/accessible-slick-theme.min.css",
+    "watch:js": "chokidar \"slick/dist/slick.js\" -c \"npm run build:js\"",
+    "watch": "npm-run-all --parallel watch:css watch:js"
   },
   "keywords": [
     "accessible",
@@ -18,8 +43,13 @@
     "slider",
     "jquery-plugin"
   ],
-  "author": "Accessible360 <jwebb@accessible360.com>",
+  "author": "Miguel Quintero <mquintero@ivcreative.com>",
   "contributors": [
+    {
+      "name": "Miguel Quintero",
+      "email": "mquintero@ivcreative.com",
+      "url": "https://ivcreative.com"
+    },
     {
       "name": "jason webb",
       "email": "jwebb@accessible360.com",
@@ -49,27 +79,17 @@
       "email": "ash@sharpteef.net"
     }
   ],
-  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Accessible360/accessible-slick/issues"
+    "url": "https://github.com/ivcreative/accessible-vanilla-slick/issues"
   },
-  "peerDependencies": {
-    "jquery": ">=1.8.0"
+  "engines": {
+    "node": ">=16.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^9.8.6",
-    "del": "^5.1.0",
-    "grunt": "^1.2.1",
-    "grunt-contrib-cssmin": "^3.0.0",
-    "grunt-contrib-sass": "^1.0.0",
-    "grunt-contrib-uglify": "^5.0.0",
-    "grunt-postcss": "^0.9.0",
-    "grunt-sass": "^3.1.0",
-    "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^4.1.0",
-    "gulp-uglify": "^3.0.2",
-    "node-sass": "^4.14.1"
+    "chokidar-cli": "^3.0.0",
+    "esbuild": "^0.19.12",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^5.0.10",
+    "sass": "^1.85.1"
   }
 }

@@ -21,23 +21,23 @@ Just add a link to the CSS file in your `<head>`:
 
 ```html
 <!-- Add the core slick.min.css -->
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.css">
 
 <!-- Add ONE of the theme files (accessible version or original) -->
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/accessible-slick-theme.min.css">
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/accessible-slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/slick-theme.min.css">
 ```
 
 Then, before your closing `<body>` tag add:
 
 ```html
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.js"></script>
 ```
 
 #### Package Managers
 
 ```sh
-npm install accessible-vanilla-slick
+npm install @ivcreative/accessible-vanilla-slick
 ```
 
 ## Why is this needed?
@@ -173,14 +173,14 @@ npm install
     * `slick/slick.scss`
     * `slick/slick-theme.scss`
 
-3. Build! Multiple build systems are available to help with future-proofing. Use whichever one you like - the output is the same!
+3. Build using npm scripts (modern Sass + ESBuild pipeline):
 
 ```sh
-# Build with Gulp (see gulpfile.js)
-gulp
+# Build once
+npm run build
 
-# OR build with Grunt (see gruntfile.js)
-grunt
+# Watch source files and rebuild on change
+npm run watch
 ```
 
 4. Check your changes by loading up `docs/index.html` in your browser.
