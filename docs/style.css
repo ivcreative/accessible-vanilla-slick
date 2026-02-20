@@ -906,21 +906,27 @@ h1, h2, h3, h4, h5, h6 {
   color: #fff !important;
 }
 
-/* Exclude slider controls from button styling */
-.button:not(.slick-prev):not(.slick-next):not(.slick-dots),
-button:not(.slick-prev):not(.slick-next):not(.slick-dots) {
+/* Page buttons */
+.button, button {
   background: var(--button-bg) !important;
   color: white !important;
   border: none !important;
   transition: background 0.3s ease;
 }
 
-.button:hover:not(.slick-prev):not(.slick-next):not(.slick-dots),
-button:hover:not(.slick-prev):not(.slick-next):not(.slick-dots),
-.button:focus:not(.slick-prev):not(.slick-next):not(.slick-dots),
-button:focus:not(.slick-prev):not(.slick-next):not(.slick-dots) {
+.button:hover, button:hover,
+.button:focus, button:focus {
   background: var(--button-hover) !important;
   color: white !important;
+}
+
+/* Override styling for slider controls */
+.slick-prev,
+.slick-next,
+.slick-dots button {
+  background: transparent !important;
+  color: white !important;
+  border: none !important;
 }
 
 .slider > div > div > p {
