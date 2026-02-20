@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10121a"/>
+      <stop offset="100%" stop-color="#2e3f74"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="none" stroke="#8dd3ff" stroke-width="2" stroke-opacity="0.55">
+    <rect x="140" y="100" width="920" height="560" rx="22"/>
+    <rect x="200" y="160" width="800" height="440" rx="18"/>
+    <rect x="260" y="220" width="680" height="320" rx="14"/>
+  </g>
+  <g fill="#9cc0ff" opacity="0.45">
+    <circle cx="300" cy="300" r="16"/>
+    <circle cx="600" cy="300" r="16"/>
+    <circle cx="900" cy="300" r="16"/>
+    <circle cx="300" cy="500" r="16"/>
+    <circle cx="600" cy="500" r="16"/>
+    <circle cx="900" cy="500" r="16"/>
+  </g>
+  <text x="60" y="760" fill="#ffffff" opacity="0.82" font-family="Arial, sans-serif" font-size="34">AI Concept 03 · Data Frame</text>
+</svg>

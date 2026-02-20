@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Arrow Positioning</title>
+  <link rel="stylesheet" type="text/css" href="../slick/dist/slick.css">
+  <link rel="stylesheet" type="text/css" href="../slick/dist/accessible-slick-theme.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .slider-container {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    .slider-item {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 100px 20px;
+      text-align: center;
+      font-size: 24px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slider-item:nth-child(odd) {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    .dom-inspector {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h1>Accessible Slick - Arrow Positioning Test</h1>
+  
+  <div class="test-section">
+    <h2>Test 1: Basic Slider with Arrows</h2>
+    <p>Expected DOM order: <code>&lt;button.slick-prev&gt; &lt;div.slick-list&gt; &lt;button.slick-next&gt;</code></p>
+    
+    <div class="slider-container" id="slider1">
+      <div class="slider-item">Slide 1</div>
+      <div class="slider-item">Slide 2</div>
+      <div class="slider-item">Slide 3</div>
+      <div class="slider-item">Slide 4</div>
+      <div class="slider-item">Slide 5</div>
+    </div>
+
+    <h3>DOM Structure:</h3>
+    <div class="dom-inspector" id="inspector1"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Test 2: Center Mode</h2>
+    <p>Expected DOM order: <code>&lt;button.slick-prev&gt; &lt;div.slick-list&gt; &lt;button.slick-next&gt;</code></p>
+    
+    <div class="slider-container" id="slider2">
+      <div class="slider-item">Slide 1</div>
+      <div class="slider-item">Slide 2</div>
+      <div class="slider-item">Slide 3</div>
+      <div class="slider-item">Slide 4</div>
+      <div class="slider-item">Slide 5</div>
+    </div>
+
+    <h3>DOM Structure:</h3>
+    <div class="dom-inspector" id="inspector2"></div>
+  </div>
+
+  <script src="../slick/dist/slick.js"></script>
+  <script>
+    function inspectDOM(selector, inspectorId) {
+      const element = document.querySelector(selector);
+      const inspector = document.getElementById(inspectorId);
+      
+      if (element) {
+        // Get HTML structure of parent and children
+        let html = '';
+        if (element.parentNode) {
+          const parent = element.parentNode;
+          for (let child of parent.children) {
+            const classList = child.className ? ` class="${child.className}"` : '';
+            const id = child.id ? ` id="${child.id}"` : '';
+            html += `<${child.tagName.toLowerCase()}${id}${classList}>\n`;
+          }
+        }
+        inspector.textContent = html;
+      } else {
+        inspector.textContent = 'Slider not found';
+      }
+    }
+
+    // Initialize sliders
+    const slider1 = document.getElementById('slider1');
+    const slider2 = document.getElementById('slider2');
+
+    // Use the vanilla JS slider
+    const { SlickSlider } = window;
+
+    // Create slider 1 - basic
+    const slick1 = new SlickSlider(slider1, {
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: true,
+      dots: true,
+      infinite: true
+    });
+
+    // Create slider 2 - center mode
+    const slick2 = new SlickSlider(slider2, {
+      centerMode: true,
+      centerPadding: '60px',
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      arrows: true,
+      dots: true,
+      infinite: true
+    });
+
+    // Inspect DOM after a small delay to ensure DOM is built
+    setTimeout(() => {
+      inspectDOM('#slider1', 'inspector1');
+      inspectDOM('#slider2', 'inspector2');
+      
+      // Also log to console for debugging
+      console.log('Slider 1 parent HTML:');
+      const slider1Parent = slider1.parentNode;
+      console.log(slider1Parent.innerHTML);
+      console.log('Slider 1 parent children:');
+      for (let child of slider1Parent.children) {
+        console.log(`- ${child.tagName.toLowerCase()}.${child.className}`);
+      }
+      
+      console.log('\nSlider 2 parent HTML:');
+      const slider2Parent = slider2.parentNode;
+      console.log(slider2Parent.innerHTML);
+      console.log('Slider 2 parent children:');
+      for (let child of slider2Parent.children) {
+        console.log(`- ${child.tagName.toLowerCase()}.${child.className}`);
+      }
+    }, 100);
+  </script>
+</body>
+</html>

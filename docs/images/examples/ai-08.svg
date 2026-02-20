@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2b1111"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="none" stroke="#ffe2e2" stroke-opacity="0.55">
+    <path d="M200 180H1000V620H200Z" stroke-width="5"/>
+    <path d="M260 240H940V560H260Z" stroke-width="3"/>
+    <path d="M320 300H880V500H320Z" stroke-width="2"/>
+  </g>
+  <g fill="#ffe2e2" opacity="0.4">
+    <circle cx="260" cy="240" r="10"/>
+    <circle cx="940" cy="240" r="10"/>
+    <circle cx="260" cy="560" r="10"/>
+    <circle cx="940" cy="560" r="10"/>
+  </g>
+  <text x="60" y="760" fill="#ffffff" opacity="0.82" font-family="Arial, sans-serif" font-size="34">AI Concept 08 · Ember Grid</text>
+</svg>

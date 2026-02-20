@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34073d"/>
+      <stop offset="100%" stop-color="#ff006e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="none" stroke="#ffd4ec" stroke-opacity="0.5">
+    <path d="M120 520Q320 180 520 520T920 520" stroke-width="8"/>
+    <path d="M120 600Q320 260 520 600T920 600" stroke-width="4"/>
+    <path d="M120 670Q320 340 520 670T920 670" stroke-width="2"/>
+  </g>
+  <circle cx="980" cy="180" r="90" fill="#ffffff" opacity="0.13"/>
+  <text x="60" y="760" fill="#ffffff" opacity="0.82" font-family="Arial, sans-serif" font-size="34">AI Concept 04 · Sonic Bloom</text>
+</svg>

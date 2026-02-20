@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Accessible Vanilla Slick - the last (accessible) carousel you'll ever need</title>
+  <title>accessible-slick - the last (accessible) carousel you'll ever need</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="../slick/dist/slick.min.css">
-  <link rel="stylesheet" type="text/css" href="../slick/dist/accessible-slick-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/accessible-slick-theme.min.css">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="a11y-dark.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-  <meta name="description" content="accessible-slick is a highly accessible, vanilla JavaScript version of the popular Slick Slider responsive carousel that supports multiple breakpoints, CSS3 transitions, touch events/swiping &amp; much more!">
-  <meta name="keywords" content="accessible, accessibility, wcag, slick, responsive, carousel, slider, vanilla js, ES6, plugin, CSS3, swipe, touch">
+  <meta name="description" content="accessible-slick is a highly accessible version of the popular Slick Slider responsive carousel jQuery plugin that supports multiple breakpoints, CSS3 transitions, touch events/swiping &amp; much more!">
+  <meta name="keywords" content="accessible, accessibility, wcag, slick, responsive, carousel, slider, jQuery, plugin, CSS3, swipe, touch">
 
   <!-- Open Graph -->
   <meta property="og:title" content="accessible-slick - the last (accessible) carousel you'll ever need">
-  <meta property="og:description" content="accessible-slick is a highly accessible, vanilla JavaScript version of the popular Slick Slider responsive carousel that supports multiple breakpoints, CSS3 transitions, touch events/swiping &amp; much more!">
+  <meta property="og:description" content="accessible-slick is a highly accessible version of the popular Slick Slider responsive carousel jQuery plugin that supports multiple breakpoints, CSS3 transitions, touch events/swiping &amp; much more!">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://ivcreative.github.io/accessible-vanilla-slick">
-  <meta property="og:image" content="https://ivcreative.github.io/accessible-vanilla-slick/images/social-media-preview.png">
+  <meta property="og:url" content="https://accessible360.github.io/accessible-slick">
+  <meta property="og:image" content="https://accessible360.github.io/accessible-slick/images/social-media-preview.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="300">
   <meta property="og:image:height" content="300">
@@ -26,136 +26,17 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="accessible-slick - the last (accessible) carousel you'll ever need">
-  <meta name="twitter:description" content="accessible-slick is a highly accessible, vanilla JavaScript version of the popular Slick Slider responsive carousel that supports multiple breakpoints, CSS3 transitions, touch events/swiping &amp; much more!">
-  <meta name="twitter:creator" content="ivcreative">
-  <meta name="twitter:image:src" content="https://ivcreative.github.io/accessible-vanilla-slick/images/social-media-preview.png">
-  <meta name="twitter:domain" content="https://ivcreative.github.io/accessible-vanilla-slick/">
+  <meta name="twitter:description" content="accessible-slick is a highly accessible version of the popular Slick Slider responsive carousel jQuery plugin that supports multiple breakpoints, CSS3 transitions, touch events/swiping &amp; much more!">
+  <meta name="twitter:creator" content="Accessible360">
+  <meta name="twitter:image:src" content="https://accessible360.github.io/accessible-slick/images/social-media-preview.png">
+  <meta name="twitter:domain" content="https://accessible360.github.io/accessible-slick/">
 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 
   <style>
   .slick-slide {
     height: auto;
-  }
-
-  /* Dark Theme Color Palette */
-  :root {
-    --bg-dark: #1a1a2e;
-    --bg-section: #2a2a3e;
-    --text-light: #e0e0e0;
-    --border-color: #3a3a4e;
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --button-bg: #667eea;
-    --button-hover: #5567d8;
-  }
-
-  body {
-    background: var(--bg-dark) !important;
-    color: var(--text-light) !important;
-  }
-
-  .header {
-    background: var(--primary-gradient);
-    padding: 2rem 1.5rem;
-    border-radius: 8px;
-    margin: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  }
-
-  .header .title,
-  .header .subheading {
-    color: #fff !important;
-  }
-
-  main {
-    background: var(--bg-section);
-    margin: 1rem;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    border: 1px solid var(--border-color);
-  }
-
-  section {
-    background: var(--bg-dark);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    border: 1px solid var(--border-color);
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    color: #fff !important;
-  }
-
-  .button, button {
-    background: var(--button-bg) !important;
-    color: white !important;
-    border: none !important;
-    transition: background 0.3s ease;
-  }
-
-  .button:hover, button:hover,
-  .button:focus, button:focus {
-    background: var(--button-hover) !important;
-    color: white !important;
-  }
-
-  .slider > div > div > p {
-    background: var(--primary-gradient) !important;
-    color: white !important;
-    padding: 3rem !important;
-    border-radius: 4px !important;
-    font-size: 3rem !important;
-    font-weight: bold !important;
-  }
-
-  .slider > div > div:nth-child(2n) > p {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-  }
-
-  .slider > div > div:nth-child(3n) > p {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-  }
-
-  .slider > div > div:nth-child(4n) > p {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
-  }
-
-  .slider > div > div:nth-child(5n) > p {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
-  }
-
-  .fixed-header {
-    background: var(--bg-section) !important;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .fixed-header .title {
-    color: #fff !important;
-  }
-
-  code {
-    background: var(--bg-dark);
-    padding: 0.2rem 0.4rem;
-    border-radius: 3px;
-    color: #a5d6ff;
-  }
-
-  pre {
-    background: var(--bg-dark) !important;
-    border-left: 4px solid var(--button-bg);
-    padding: 1.25rem;
-    border-radius: 4px;
-  }
-
-  a {
-    color: #667eea;
-  }
-
-  a:hover {
-    color: #764ba2;
   }
   </style>
 </head>
@@ -165,10 +46,10 @@
 
   <header class="header">
     <div class="header-content">
-      <h1 class="title">Accessible Vanilla Slick</h1>
+      <h1 class="title">accessible-slick</h1>
       <p class="subheading">the last (accessible) carousel you'll ever need</p>
 
-      <a href="https://github.com/ivcreative/accessible-vanilla-slick" class="github-link" title="View source on Github">
+      <a href="https://github.com/Accessible360/accessible-slick" class="github-link" title="View source on Github">
         <span class="fab fa-github" aria-hidden="true"></span>
         <span class="sr-only">View source on Github</span>
       </a>
@@ -194,7 +75,7 @@
 
   <header class="fixed-header">
     <div class="header-content">
-      <h1 class="title">Accessible Vanilla Slick</h1>
+      <h1 class="title">accessible-slick</h1>
 
       <nav>
         <ul class="nav">
@@ -217,13 +98,17 @@
 
   <main id="main" tabindex="-1">
     <p class="readme-banner">
-      Read more about <a href="https://github.com/ivcreative/accessible-vanilla-slick#why-is-this-needed">why this package exists</a> and <a href="https://github.com/ivcreative/accessible-vanilla-slick#what-makes-this-accessible">what makes it accessible</a> over on the project's <a href="https://github.com/ivcreative/accessible-vanilla-slick">Github repo</a>!
+      Read more about <a href="https://github.com/Accessible360/accessible-slick#why-is-this-needed">why this package exists</a> and <a href="https://github.com/Accessible360/accessible-slick#what-makes-this-accessible">what makes it accessible</a> over on the project's <a href="https://github.com/Accessible360/accessible-slick">Github repo</a>!
     </p>
 
     <section class="alt-background">
       <div class="content">
-        <p>A highly accessible, WCAG 2.2 compliant, drop-in replacement for Slick Slider (1.8.1) crafted and tested by expert users and professional accessibility consultants, intended to make life easier for real-world dev teams who need to pass accessibility audits.</p>
-       
+        <p>A highly accessible, WCAG 2.0 / 2.1 compliant, drop-in replacement for Slick Slider (1.8.1) crafted and tested by expert users and professional accessibility consultants, intended to make life easier for real-world dev teams who need to pass accessibility audits.</p>
+
+        <div class="sponsor-banner">
+          Sponsored by:
+          <a href="https://accessible360.com"><img src="images/accessible360-logo.png" alt="Accessible360 logo with tagline Better. For All." title="Accessible360"></a>
+        </div>
 
         <h2 id="features" tabindex="-1">Features</h2>
 
@@ -242,7 +127,7 @@
           <li>When <code>centerMode</code> is enabled, the centered slide will be indicated with the text <code>" (centered)"</code> at the end of its <code>aria-label</code>.</li>
         </ul>
 
-        <p><a href="https://github.com/ivcreative/accessible-vanilla-slick#what-makes-this-accessible">Read more about all of these features here!</a></p>
+        <p><a href="https://github.com/Accessible360/accessible-slick#what-makes-this-accessible">Read more about all of these features here!</a></p>
 
           <hr aria-hidden="true">
 
@@ -259,16 +144,7 @@
           <div><p>6</p></div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.single-item'),
-  {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1
-  }
-);</code></pre>
+        <pre><code class="language-javascript">$('.single-item').slick();</code></pre>
 
           <hr aria-hidden="true">
 
@@ -286,16 +162,11 @@
           <div><p>9</p></div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.multiple-items'),
-  {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3
-  }
-);</code></pre>
+        <pre><code class="language-javascript">$('.multiple-items').slick({
+  infinite: true,
+  slidesToShow: 3,
+  slidesToScroll: 3
+});</code></pre>
 
           <hr aria-hidden="true">
 
@@ -312,44 +183,41 @@
           <div><p>8</p></div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.responsive'),
-  {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
+        <pre><code class="language-javascript">$('.responsive').slick({
+  dots: true,
+  infinite: false,
+  speed: 300,
+  slidesToShow: 4,
+  slidesToScroll: 4,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        infinite: true,
+        dots: true
       }
-      // You can unslick at a given breakpoint now by adding:
-      // settings: "unslick"
-      // instead of a settings object
-    ]
-  }
-);</code></pre>
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1
+      }
+    }
+    // You can unslick at a given breakpoint now by adding:
+    // settings: "unslick"
+    // instead of a settings object
+  ]
+});</code></pre>
 
         <div class="accessibility-tip">
           <div class="icon">
@@ -387,17 +255,14 @@
           </div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.variable-width'),
-  {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    centerMode: true,
-    variableWidth: true
-  }
-);</code></pre>
+        <pre><code class="language-javascript">$('.variable-width').slick({
+  dots: true,
+  infinite: true,
+  speed: 300,
+  slidesToShow: 1,
+  centerMode: true,
+  variableWidth: true
+});</code></pre>
 
         <p style="margin-top: 40px; margin-bottom: 20px"><strong>NOTE:</strong> starting in Slick v1.8.1, variable slide widths cannot be defined directly on individual slides using the <code>style</code> attribute as shown in the <a href="http://kenwheeler.github.io/slick/#demos" target="_blank">original demo</a>. Instead, set the width of the inner content, like so (or via external CSS):</p>
 
@@ -430,22 +295,19 @@
           </div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.adaptive-height'),
-  {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    adaptiveHeight: true
-  }
-);</code></pre>
+        <pre><code class="language-javascript">$('.adaptive-height').slick({
+  dots: true,
+  infinite: true,
+  speed: 300,
+  slidesToShow: 1,
+  adaptiveHeight: true
+});</code></pre>
 
           <hr aria-hidden="true">
 
         <h3 id="data-attribute-settings" tabindex="-1">Data Attribute Settings</h3>
 
-        <p>In slick 1.5+ you can now add settings using the <code>data-slick</code> attribute. You still need to initialize slick on the element with <code>new slickModule.SlickSlider(element, {})</code>.</p>
+        <p>In slick 1.5+ you can now add settings using the <code>data-slick</code> attribute. You still need to call <code>$(element).slick()</code> to initialize slick on the element.</p>
 
         <div class="data" data-slick="{&quot;slidesToShow&quot;: 4, &quot;slidesToScroll&quot;: 4}">
           <div><p>1</p></div>
@@ -478,38 +340,33 @@
           <div><p>6</p></div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.center'),
-  {
-    centerMode: true,
-    infinite: true,
-    centerPadding: '60px',
-    slidesToShow: 3,
-    speed: 500,
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          arrows: false,
-          dots: true,
-          centerMode: true,
-          centerPadding: '40px',
-          slidesToShow: 3
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          arrows: false,
-          dots: true,
-          centerMode: true,
-          centerPadding: '40px',
-          slidesToShow: 1
-        }
+        <pre><code class="language-javascript">$('.center').slick({
+  centerMode: true,
+  centerPadding: '60px',
+  slidesToShow: 3,
+  responsive: [
+    {
+      breakpoint: 768,
+      settings: {
+        arrows: false,
+        dots: true,
+        centerMode: true,
+        centerPadding: '40px',
+        slidesToShow: 3
       }
-    ]
-  }
-);</code></pre>
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        arrows: false,
+        dots: true,
+        centerMode: true,
+        centerPadding: '40px',
+        slidesToShow: 1
+      }
+    }
+  ]
+});</code></pre>
 
           <hr aria-hidden="true">
 
@@ -517,43 +374,48 @@
 
         <div class="slider image-slider lazy">
           <div>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="images/lazyfonz1.png" alt="Fonz and Richie standing in front of motorcycle." loading="lazy">
+            <div class="image">
+              <img data-lazy="images/lazyfonz1.png" alt="Fonz and Richie standing in front of motorcycle.">
+            </div>
           </div>
           <div>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="images/lazyfonz2.png" alt="Close headshot of Fonz." loading="lazy">
+            <div class="image">
+              <img data-lazy="images/lazyfonz2.png" alt="Close headshot of Fonz.">
+            </div>
           </div>
           <div>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="images/lazyfonz3.png" alt="Fonz sitting on motorcycle, looking over his shoulder at the camera." loading="lazy">
+            <div class="image">
+              <img data-lazy="images/lazyfonz3.png" alt="Fonz sitting on motorcycle, looking over his shoulder at the camera.">
+            </div>
           </div>
           <div>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="images/lazyfonz4.png" alt="Fonz in jumpsuit looking to the left, talking to a shorter character with dark hair." loading="lazy">
+            <div class="image">
+              <img data-lazy="images/lazyfonz4.png" alt="Fonz in jumpsuit looking to the left, talking to a shorter character with dark hair.">
+            </div>
           </div>
           <div>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="images/lazyfonz5.png" alt="Fonz and Richie sitting at a diner table, with Fonz explaining something." loading="lazy">
+            <div class="image">
+              <img data-lazy="images/lazyfonz5.png" alt="Fonz and Richie sitting at a diner table, with Fonz explaining something.">
+            </div>
           </div>
           <div>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="images/lazyfonz6.png" alt="Fonz posing on the side of a motorcycle, with one hand and one foot on the bike. Other hand in jacket, other leg on the ground." loading="lazy">
+            <div class="image">
+              <img data-lazy="images/lazyfonz6.png" alt="Fonz posing on the side of a motorcycle, with one hand and one foot on the bike. Other hand in jacket, other leg on the ground.">
+            </div>
           </div>
         </div>
 
         <pre><code class="language-javascript">// To use lazy loading, set a data-lazy attribute
-// on your img tags with a placeholder src. Don't
+// on your img tags and leave off the src. Don't
 // forget that alt description!
 
-&lt;img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" 
-     data-lazy="img/lazyfonz1.png" 
-     alt="[image description here]"
-     loading="lazy"&gt;
+&lt;img data-lazy="img/lazyfonz1.png" alt="[image description here]"&gt;
 
-const slider = new slickModule.SlickSlider(
-  document.querySelector('.lazy'),
-  {
-    lazyLoad: 'ondemand',
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    speed: 500
-  }
-);</code></pre>
+$('.lazy').slick({
+  lazyLoad: 'ondemand',
+  slidesToShow: 3,
+  slidesToScroll: 1
+});</code></pre>
 
         <div class="accessibility-tip">
           <div class="icon">
@@ -579,18 +441,12 @@ const slider = new slickModule.SlickSlider(
           <div><p>6</p></div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.autoplay'),
-  {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000
-  }
-);</code></pre>
+        <pre><code class="language-javascript">$('.autoplay').slick({
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 2000,
+});</code></pre>
 
         <p>In accessible-slick, a pause/play icon button is <em>automatically added</em> when <code>autoplay</code> is enabled in order to comply with <a href="https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide.html" target="_blank">WCAG 2.2.2</a>.</p>
 
@@ -612,27 +468,29 @@ const slider = new slickModule.SlickSlider(
 
         <div class="slider image-slider fade">
           <div>
-            <img src="images/fonz1.png" alt="Fonz getting pulled behind a boat on water skis on a lake, wearing a leather jacket, for some reason.">
+            <div class="image">
+              <img src="images/fonz1.png" alt="Fonz getting pulled behind a boat on water skis on a lake, wearing a leather jacket, for some reason.">
+            </div>
           </div>
           <div>
-            <img src="images/fonz2.png" alt="Fonz dancing next to Richie while Richie sits smiling on a motorcycle.">
+            <div class="image">
+              <img src="images/fonz2.png" alt="Fonz dancing next to Richie while Richie sits smiling on a motorcycle.">
+            </div>
           </div>
           <div>
-            <img src="images/fonz3.png" alt="Fonz sitting on a motorcycle, looking up a talking to three men standing around him.">
+            <div class="image">
+              <img src="images/fonz3.png" alt="Fonz sitting on a motorcycle, looking up a talking to three men standing around him.">
+            </div>
           </div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.fade'),
-  {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    fade: true,
-    slide: 'div',
-    cssEase: 'linear'
-  }
-);</code></pre>
+        <pre><code class="language-javascript">$('.fade').slick({
+  dots: true,
+  infinite: true,
+  speed: 500,
+  fade: true,
+  cssEase: 'linear'
+});</code></pre>
 
         <div class="accessibility-tip">
           <div class="icon">
@@ -658,27 +516,18 @@ const slider = new slickModule.SlickSlider(
           <a href="javascript:void(0)" class="button js-remove-slide">Remove Slide</a>
         </div>
 
-        <pre><code class="language-javascript">const addRemoveSlider = new slickModule.SlickSlider(
-  document.querySelector('.add-remove'),
-  {
-    dots: true,
-    slidesToShow: 3,
-    speed: 500,
-    slidesToScroll: 3
-  }
-);
-
-let slideIndex = 1;
-
-document.querySelector('.js-add-slide').addEventListener('click', function() {
-  slideIndex++;
-  const newSlide = document.createElement('div');
-  newSlide.innerHTML = '<p>' + slideIndex + '</p>';
-  addRemoveSlider.slickAdd(newSlide);
+        <pre><code class="language-javascript">$('.add-remove').slick({
+  slidesToShow: 3,
+  slidesToScroll: 3
 });
 
-document.querySelector('.js-remove-slide').addEventListener('click', function() {
-  addRemoveSlider.slickRemove(slideIndex - 1);
+$('.js-add-slide').on('click', function() {
+  slideIndex++;
+  $('.add-remove').slick('slickAdd','<div>' + slideIndex + '</div>');
+});
+
+$('.js-remove-slide').on('click', function() {
+  $('.add-remove').slick('slickRemove',slideIndex - 1);
   if (slideIndex !== 0){
     slideIndex--;
   }
@@ -707,26 +556,21 @@ document.querySelector('.js-remove-slide').addEventListener('click', function() 
           <a href="javascript:void(0)" class="button js-filter">Filter Slides</a>
         </div>
 
-        <pre><code class="language-javascript">const filteringSlider = new slickModule.SlickSlider(
-  document.querySelector('.filtering'),
-  {
-    dots: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4
-  }
-);
+        <pre><code class="language-javascript">$('.filtering').slick({
+  slidesToShow: 4,
+  slidesToScroll: 4
+});
 
-let filtered = false;
+var filtered = false;
 
-document.querySelector('.js-filter').addEventListener('click', function() {
+$('.js-filter').on('click', function(){
   if (filtered === false) {
-    filteringSlider.slickFilter(':even');
-    this.textContent = 'Unfilter Slides';
+    $('.filtering').slick('slickFilter',':even');
+    $(this).text('Unfilter Slides');
     filtered = true;
   } else {
-    filteringSlider.slickUnfilter();
-    this.textContent = 'Filter Slides';
+    $('.filtering').slick('slickUnfilter');
+    $(this).text('Filter Slides');
     filtered = false;
   }
 });</code></pre>
@@ -737,7 +581,7 @@ document.querySelector('.js-filter').addEventListener('click', function() {
 
         <p>If you really want to be that guy...</p>
 
-        <pre><code class="language-javascript">slider.unslick();</code></pre>
+        <pre><code class="language-javascript">$('.your-slider').slick('unslick');</code></pre>
 
           <hr aria-hidden="true">
 
@@ -759,34 +603,25 @@ document.querySelector('.js-filter').addEventListener('click', function() {
           <div><p>5</p></div>
         </div>
 
-        <pre><code class="language-javascript">const sliderFor = new slickModule.SlickSlider(
-  document.querySelector('.slider-for'),
-  {
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    speed: 500,
-    arrows: false,
-    fade: true,
-    asNavFor: '.slider-nav',
-    instructionsText: 'Changing this current slide of this carousel will change the current slide of the thumbnail carousel that follows.',
-    regionLabel: 'main image carousel'
-  }
-);
+        <pre><code class="language-javascript"> $('.slider-for').slick({
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+  fade: true,
+  asNavFor: '.slider-nav',
+  instructionsText: 'Changing this current slide of this carousel will change the current slide of the thumbnail carousel that follows.',
+  regionLabel: 'main image carousel'
+});
 
-const sliderNav = new slickModule.SlickSlider(
-  document.querySelector('.slider-nav'),
-  {
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    speed: 500,
-    asNavFor: '.slider-for',
-    dots: true,
-    centerMode: true,
-    slide: 'div',
-    instructionsText: 'Changing the current slide of this carousel will change the current slide of the preceding main image carousel.',
-    regionLabel: 'thumbnail carousel'
-  }
-);</code></pre>
+$('.slider-nav').slick({
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  asNavFor: '.slider-for',
+  dots: true,
+  centerMode: true,
+  instructionsText: 'Changing the current slide of this carousel will change the current slide of the preceding main image carousel.',
+  regionLabel: 'thumbnail carousel'
+});</code></pre>
 
         <div class="accessibility-tip">
           <div class="icon">
@@ -823,17 +658,9 @@ const sliderNav = new slickModule.SlickSlider(
           <div><p>6</p></div>
         </div>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.single-item-rtl'),
-  {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    rtl: true
-  }
-);</code></pre>
+        <pre><code class="language-javascript">$('.single-item-rtl').slick({
+  rtl: true
+});</code></pre>
 
         <p><strong>Note:</strong> the HTML tag of the slider, or the parent element of the slider, must have the attribute <code>dir="rtl"</code>.</p>
 
@@ -871,20 +698,20 @@ const sliderNav = new slickModule.SlickSlider(
 
           <hr aria-hidden="true">
 
-        <p>Add <code>slick.min.js</code> before your closing <code>&lt;body&gt;</code> tag (no jQuery required!)</p>
+        <p>Add <code>slick.min.js</code> before your closing <code>&lt;body&gt;</code> tag, after jQuery (requires jQuery 1.7+)</p>
 
-        <pre><code class="language-markup">&lt;script type=&quot;text/javascript&quot; src=&quot;slick/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+        <pre><code class="language-markup">&lt;script type=&quot;text/javascript&quot; src=&quot;https://code.jquery.com/jquery-3.5.1.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;slick/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
 
           <hr aria-hidden="true">
 
         <p>Initialize your slider in your script file or an inline script tag</p>
 
-        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
-  document.querySelector('.your-class'),
-  {
+        <pre><code class="language-javascript">$(document).ready(function() {
+  $('.your-class').slick({
     setting-name: setting-value
-  }
-);</code></pre>
+  });
+});</code></pre>
 
           <hr aria-hidden="true">
 
@@ -893,8 +720,8 @@ const sliderNav = new slickModule.SlickSlider(
         <pre style="margin-bottom: 40px !important"><code class="language-markup">&lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;My Now Amazing Webpage&lt;/title&gt;
-    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;slick/slick.min.css&quot;&gt;
-    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;slick/accessible-slick-theme.min.css&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;slick/slick.css&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;slick/accessible-slick-theme.css&quot;&gt;
   &lt;/head&gt;
 
   &lt;body&gt;
@@ -904,15 +731,15 @@ const sliderNav = new slickModule.SlickSlider(
       &lt;div&gt;your content&lt;/div&gt;
     &lt;/div&gt;
 
+    &lt;script type=&quot;text/javascript&quot; src=&quot;https://code.jquery.com/jquery-3.5.1.min.js&quot;&gt;&lt;/script&gt;
     &lt;script type=&quot;text/javascript&quot; src=&quot;slick/slick.min.js&quot;&gt;&lt;/script&gt;
 
     &lt;script type=&quot;text/javascript&quot;&gt;
-      const slider = new slickModule.SlickSlider(
-        document.querySelector('.your-class'),
-        {
+      $(document).ready(function() {
+        $('.your-class').slick({
           setting-name: setting-value
-        }
-      );
+        });
+      });
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
@@ -923,7 +750,7 @@ const sliderNav = new slickModule.SlickSlider(
       <div class="content">
         <h2 id="settings" tabindex="-1">Settings</h2>
 
-        <p>With just a <a href="https://github.com/ivcreative/accessible-vanilla-slick#deprecated-settings-">few important exceptions</a>, all of the <a href="https://github.com/kenwheeler/slick#settings" target="_blank">original settings</a> are still available. Additionally, the following <a href="https://github.com/ivcreative/accessible-vanilla-slick#new-settings-">new settings</a> are also now available:</p>
+        <p>With just a <a href="https://github.com/Accessible360/accessible-slick#deprecated-settings-">few important exceptions</a>, all of the <a href="https://github.com/kenwheeler/slick#settings" target="_blank">original settings</a> are still available. Additionally, the following <a href="https://github.com/Accessible360/accessible-slick#new-settings-">new settings</a> are also now available:</p>
 
         <table>
           <thead class="sr-only">
@@ -987,7 +814,7 @@ const sliderNav = new slickModule.SlickSlider(
 
           <div class="content">
             <h3 class="heading">NOTE: deprecated settings</h3>
-            <p>The <code>accessibility</code>, <code>focusOnChange</code>, and <code>focusOnSelect</code> settings no longer do anything, but nothing will break if they are passed in by a legacy config. <a href="https://github.com/ivcreative/accessible-vanilla-slick#deprecated-settings-">Read more about these changes here</a>.</p>
+            <p>The <code>accessibility</code>, <code>focusOnChange</code>, and <code>focusOnSelect</code> settings no longer do anything, but nothing will break if they are passed in by a legacy config. <a href="https://github.com/Accessible360/accessible-slick#deprecated-settings-">Read more about these changes here</a>.</p>
           </div>
         </div>
 
@@ -1006,375 +833,255 @@ const sliderNav = new slickModule.SlickSlider(
       <div class="content">
         <h2 id="go-get-it" tabindex="-1">Go Get It</h2>
 
-        <a class="button first" href="https://github.com/ivcreative/accessible-vanilla-slick/archive/v1.0.1.zip">Download Now</a>
-        <a class="button last" href="https://github.com/ivcreative/accessible-vanilla-slick">View On Github</a>
+        <a class="button first" href="https://github.com/Accessible360/accessible-slick/archive/v1.0.1.zip">Download Now</a>
+        <a class="button last" href="https://github.com/Accessible360/accessible-slick">View On Github</a>
 
           <hr aria-hidden="true">
 
         <p>You can also use accessible-slick with the jsDelivr CDN!</p>
 
         <pre><code class="language-markup">CSS
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;slick/slick.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick.min.css&quot;&gt;
 
 Theme CSS option #1 (original)
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;slick/slick-theme.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick-theme.min.css&quot;&gt;
 
 Theme CSS option #2 (accessible)
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;slick/accessible-slick-theme.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/accessible-slick-theme.min.css&quot;&gt;
 
 JS
-&lt;script type=&quot;text/javascript&quot; src=&quot;slick/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+&lt;script type=&quot;text/javascript&quot; src=&quot;//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
       </div>
     </section>
   </main>
 
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.21.0/prism.min.js"></script>
-  <script src="../slick/dist/slick.min.js"></script>
 
   <script>
-    // Wait a tiny bit to ensure slick.min.js is fully loaded
-    setTimeout(function() {
-      // Normalize globals across build outputs.
-      if (!window.slickModule || !window.slickModule.SlickSlider) {
-        window.slickModule = {
-          SlickSlider: window.SlickSlider,
-          default: window.Slick || window.SlickSlider
-        };
-      }
-
-      var SlickSliderCtor = window.slickModule && window.slickModule.SlickSlider;
-      if (!SlickSliderCtor) {
-        return;
-      }
-
-      function initSlider(selector, options) {
-        var element = document.querySelector(selector);
-        if (!element) {
-          return null;
-        }
-
-        try {
-          return new SlickSliderCtor(element, options || {});
-        } catch (error) {
-          return null;
-        }
-      }
-
-      function applyInlineLazyImages(container) {
-        if (!container) {
-          return;
-        }
-
-        var lazyImages = container.querySelectorAll('img[data-lazy]');
-        lazyImages.forEach(function(image) {
-          var currentSrc = image.getAttribute('src');
-          var lazySrc = image.getAttribute('data-lazy');
-
-          if (!lazySrc) {
-            return;
-          }
-
-          if (!currentSrc || currentSrc.indexOf('data:image') === 0) {
-            image.setAttribute('src', lazySrc);
-          }
-        });
-      }
-
-      function preloadImages(container) {
-        if (!container) {
-          return Promise.resolve();
-        }
-
-        var images = container.querySelectorAll('img');
-        var promises = [];
-
-        images.forEach(function(img) {
-          var src = img.getAttribute('src');
-          if (src && src.indexOf('data:image') !== 0) {
-            var promise = new Promise(function(resolve) {
-              var tempImg = new Image();
-              tempImg.onload = resolve;
-              tempImg.onerror = resolve;
-              tempImg.src = src;
-            });
-            promises.push(promise);
-          }
-        });
-
-        return Promise.all(promises);
-      }
-    
+  $(document).ready(function() {
     // Single Item
-    const slider1 = initSlider(
-      '.single-item',
-      {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-      }
-    );
+    $('.single-item').slick({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1
+    });
 
     // Multiple Items
-    const slider2 = initSlider(
-      '.multiple-items',
-      {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 3
-      }
-    );
+    $('.multiple-items').slick({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 3,
+      slidesToScroll: 3
+    });
 
     // Responsive Display
-    const slider3 = initSlider(
-      '.responsive',
-      {
-        dots: true,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        responsive: [{
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            infinite: true,
-            dots: true
-          }
-        }, {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2
-          }
-        }, {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1
-          }
-        }]
-      }
-    );
+    $('.responsive').slick({
+      dots: true,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      responsive: [{
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      }, {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2
+        }
+      }, {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }]
+    });
 
     // Variable Width
-    const slider4 = initSlider(
-      '.variable-width',
-      {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        centerMode: true,
-        variableWidth: true
-      }
-    );
+    $('.variable-width').slick({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      centerMode: true,
+      variableWidth: true
+    });
 
     // Adaptive Height
-    const slider5 = initSlider(
-      '.adaptive-height',
-      {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        adaptiveHeight: true
-      }
-    );
+    $('.adaptive-height').slick({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      adaptiveHeight: true
+    });
 
     // Data Attribute Settings
-    const slider6 = initSlider('.data', {});
+    $('.data').slick();
 
     // Center Mode
-    const slider7 = initSlider(
-      '.center',
-      {
-        centerMode: true,
-        infinite: true,
-        centerPadding: '60px',
-        slidesToShow: 3,
-        speed: 500,
-        responsive: [{
-          breakpoint: 768,
-          settings: {
-            arrows: false,
-            dots: true,
-            centerMode: true,
-            centerPadding: '40px',
-            slidesToShow: 3
-          }
-        }, {
-          breakpoint: 480,
-          settings: {
-            arrows: false,
-            dots: true,
-            centerMode: true,
-            centerPadding: '40px',
-            slidesToShow: 1
-          }
-        }]
-      }
-    );
+    $('.center').slick({
+      centerMode: true,
+      infinite: true,
+      centerPadding: '60px',
+      slidesToShow: 3,
+      speed: 500,
+      responsive: [{
+        breakpoint: 768,
+        settings: {
+          arrows: false,
+          dots: true,
+          centerMode: true,
+          centerPadding: '40px',
+          slidesToShow: 3
+        }
+      }, {
+        breakpoint: 480,
+        settings: {
+          arrows: false,
+          dots: true,
+          centerMode: true,
+          centerPadding: '40px',
+          slidesToShow: 1
+        }
+      }]
+    });
 
     // Lazy Loading
-    const slider8 = initSlider(
-      '.lazy',
-      {
-        lazyLoad: 'ondemand',
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        speed: 500
-      }
-    );
-    applyInlineLazyImages(document.querySelector('.lazy'));
+    $('.lazy').slick({
+      lazyLoad: 'ondemand',
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      speed: 500
+    });
 
     // Autoplay
-    const slider9 = initSlider(
-      '.autoplay',
-      {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 2000
-      }
-    );
+    $('.autoplay').slick({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000
+    });
 
     // Fade
-    var fadeSliderElement = document.querySelector('.fade');
-    preloadImages(fadeSliderElement).then(function() {
-      const slider10 = initSlider(
-        '.fade',
-        {
-          dots: true,
-          infinite: true,
-          speed: 500,
-          fade: true,
-          slide: 'div',
-          cssEase: 'linear'
-        }
-      );
+    $('.fade').slick({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      fade: true,
+      slide: 'div',
+      cssEase: 'linear'
     });
 
 
     // Add & Remove
-    const addRemoveSlider = initSlider(
-      '.add-remove',
-      {
-        dots: true,
-        slidesToShow: 3,
-        speed: 500,
-        slidesToScroll: 3
-      }
-    );
+    $('.add-remove').slick({
+      dots: true,
+      slidesToShow: 3,
+      speed: 500,
+      slidesToScroll: 3
+    });
 
       var slideIndex = 1;
 
       // Add Slide button
-      document.querySelector('.js-add-slide').addEventListener('click', function() {
+      $('.js-add-slide').on('click', function() {
         slideIndex++;
-        const newSlide = document.createElement('div');
-        newSlide.innerHTML = '<p>' + slideIndex + '</p>';
-        addRemoveSlider.slickAdd(newSlide);
+        $('.add-remove').slick('slickAdd','<div><p>' + slideIndex + '</p></div>');
       });
 
       // Remove Slide button
-      document.querySelector('.js-remove-slide').addEventListener('click', function() {
-        addRemoveSlider.slickRemove(slideIndex - 1);
+      $('.js-remove-slide').on('click', function() {
+        $('.add-remove').slick('slickRemove',slideIndex - 1);
+
         if (slideIndex !== 0){
           slideIndex--;
         }
       });
 
     // Filtering
-    const filteringSlider = initSlider(
-      '.filtering',
-      {
-        dots: true,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 4
-      }
-    );
+    $('.filtering').slick({
+      dots: true,
+      speed: 500,
+      slidesToShow: 4,
+      slidesToScroll: 4
+    });
 
       var filtered = false;
 
       // Filter Slides / Unfilter Slides button
-      document.querySelector('.js-filter').addEventListener('click', function() {
+      $('.js-filter').on('click', function() {
         if (filtered === false) {
-          filteringSlider.slickFilter(':even');
-          this.textContent = 'Unfilter Slides';
+          $('.filtering').slick('slickFilter',':even');
+          $(this).text('Unfilter Slides');
           filtered = true;
         } else {
-          filteringSlider.slickUnfilter();
-          this.textContent = 'Filter Slides';
+          $('.filtering').slick('slickUnfilter');
+          $(this).text('Filter Slides');
           filtered = false;
         }
       });
 
     // Slider Syncing
     // a. Main slider
-    const sliderFor = initSlider(
-      '.slider-for',
-      {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        speed: 500,
-        arrows: false,
-        fade: true,
-        asNavFor: '.slider-nav',
-        instructionsText: 'Changing this current slide of this carousel will change the current slide of the thumbnail carousel that follows.',
-        regionLabel: 'main image carousel'
-      }
-    );
+    $('.slider-for').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      speed: 500,
+      arrows: false,
+      fade: true,
+      asNavFor: '.slider-nav',
+      instructionsText: 'Changing this current slide of this carousel will change the current slide of the thumbnail carousel that follows.',
+      regionLabel: 'main image carousel'
+    });
 
     // b. Control slider
-    const sliderNav = initSlider(
-      '.slider-nav',
-      {
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        speed: 500,
-        asNavFor: '.slider-for',
-        dots: true,
-        centerMode: true,
-        slide: 'div',
-        instructionsText: 'Changing the current slide of this carousel will change the current slide of the preceding main image carousel.',
-        regionLabel: 'thumbnail carousel'
-      }
-    );
+    $('.slider-nav').slick({
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      speed: 500,
+      asNavFor: '.slider-for',
+      dots: true,
+      centerMode: true,
+      slide: 'div',
+      instructionsText: 'Changing the current slide of this carousel will change the current slide of the preceding main image carousel.',
+      regionLabel: 'thumbnail carousel'
+    });
 
     // Right to Left
-    const slider11 = initSlider(
-      '.single-item-rtl',
-      {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        rtl: true
-      }
-    );
-
+    $('.single-item-rtl').slick({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      rtl: true
+    });
 
     // Display fixed header when user has scrolled down
-    window.addEventListener('scroll', function() {
-      const fixedHeader = document.querySelector('.fixed-header');
-      if (window.scrollY > 166) {
-        fixedHeader.style.display = 'block';
+    $(window).on('scroll', function() {
+      if ($(window).scrollTop() > 166) {
+        $('.fixed-header').show();
       } else {
-        fixedHeader.style.display = 'none';
+        $('.fixed-header').hide();
       }
     });
-    
-    }, 100); // End setTimeout
+  });
   </script>
   </body>
 </html>

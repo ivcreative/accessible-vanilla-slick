@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Slick Slider - Modern Vanilla JS Demos</title>
+  <link rel="icon" href="data:,">
+  
+  <!-- Base slider styles -->
+  <link rel="stylesheet" href="slick/dist/slick.min.css">
+  
+  <!-- Accessible theme (recommended) -->
+  <link rel="stylesheet" href="slick/dist/accessible-slick-theme.min.css">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      padding: 2rem;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: #fff;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+    }
+    
+    h2 {
+      color: #fff;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+    }
+    
+    h3 {
+      color: #e0e0e0;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header-info {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .header-info h1 {
+      margin: 0 0 0.5rem 0;
+    }
+    
+    .header-info p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    
+    .demo-section {
+      background: #2a2a3e;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border: 1px solid #3a3a4e;
+    }
+    
+    .demo-section hr {
+      border: none;
+      border-top: 1px solid #3a3a4e;
+      margin: 1.5rem 0;
+    }
+    
+    .slider {
+      margin-bottom: 1.5rem;
+    }
+    
+    .slider > div {
+      padding: 0 8px;
+    }
+
+    .slick-slide {
+      margin: 10px;
+    }
+
+    
+    .slider p {
+      margin: 0;
+      padding: 3rem;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    
+    .variable-width p {
+      font-size: 1.5rem;
+      padding: 1.5rem;
+    }
+    
+    .slider div:nth-child(2n) p {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .slider div:nth-child(3n) p {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .slider div:nth-child(4n) p {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .slider div:nth-child(5n) p {
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+    
+    .image-slider .image {
+      background: #1a1a2e;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+
+    .image-slider.slick-slider > .slick-list .slick-slide {
+      margin: 0;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+
+    .image-slider .image {
+      margin: 0;
+    }
+    
+    .image-slider img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+    }
+    
+    .controls, .buttons, .filter {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+    
+    button, .button {
+      padding: 0.75rem 1.5rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    button:hover, .button:hover {
+      background: #5567d8;
+    }
+    
+    button:focus, .button:focus {
+      outline: 2px solid #667eea;
+      outline-offset: 2px;
+    }
+    
+    .code-block {
+      background: #1a1a2e;
+      padding: 1.25rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 0.85rem;
+      border-left: 4px solid #667eea;
+      color: #a5d6ff;
+      margin-top: 1rem;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    
+    .code-block .keyword {
+      color: #c792ea;
+    }
+    
+    .code-block .string {
+      color: #c3e88d;
+    }
+    
+    .code-block .number {
+      color: #f78c6c;
+    }
+    
+    .code-block .boolean {
+      color: #ff5370;
+    }
+    
+    .code-block .property {
+      color: #82aaff;
+    }
+    
+    .info-box {
+      background: #2c3e50;
+      border-left: 4px solid #3498db;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      color: #ecf0f1;
+    }
+    
+    .info-box strong {
+      color: #fff;
+    }
+    
+    .accessibility-tip {
+      background: #1e3a4f;
+      border-left: 4px solid #52c41a;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    
+    .accessibility-tip h4 {
+      color: #52c41a;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    
+    .accessibility-tip p {
+      margin: 0.5rem 0;
+      padding: 0;
+      background: none;
+      color: #e0e0e0;
+      font-size: 1rem;
+    }
+    
+    .accessibility-tip code {
+      background: #0d1f2d;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      color: #a5d6ff;
+    }
+    
+    .accessibility-tip a {
+      color: #52c41a;
+      text-decoration: underline;
+    }
+    
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-info">
+      <h1>🎠 Accessible Slick - Vanilla JS</h1>
+      <p>Modern, accessible carousel with no jQuery dependency. Fully WCAG 2.2 compliant.</p>
+    </div>
+    
+    <!-- Single Item -->
+    <div class="demo-section">
+      <h2 id="single-item">Single Item</h2>
+      
+      <div class="slider single-item">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+        <div>
+          <div><p>6</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {});</div>
+    </div>
+    
+    <!-- Multiple Items -->
+    <div class="demo-section">
+      <h2 id="multiple-items">Multiple Items</h2>
+      
+      <div class="slider multiple-items">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+        <div>
+          <div><p>6</p></div>
+        </div>
+        <div>
+          <div><p>7</p></div>
+        </div>
+        <div>
+          <div><p>8</p></div>
+        </div>
+        <div>
+          <div><p>9</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">infinite</span>: <span class="boolean">true</span>,
+  <span class="property">slidesToShow</span>: <span class="number">3</span>,
+  <span class="property">slidesToScroll</span>: <span class="number">3</span>
+});</div>
+    </div>
+    
+    <!-- Responsive Display -->
+    <div class="demo-section">
+      <h2 id="responsive-display">Responsive Display</h2>
+      
+      <div class="slider responsive">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+        <div>
+          <div><p>6</p></div>
+        </div>
+        <div>
+          <div><p>7</p></div>
+        </div>
+        <div>
+          <div><p>8</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">dots</span>: <span class="boolean">true</span>,
+  <span class="property">infinite</span>: <span class="boolean">false</span>,
+  <span class="property">speed</span>: <span class="number">300</span>,
+  <span class="property">slidesToShow</span>: <span class="number">4</span>,
+  <span class="property">slidesToScroll</span>: <span class="number">4</span>,
+  <span class="property">responsive</span>: [
+    {
+      <span class="property">breakpoint</span>: <span class="number">1024</span>,
+      <span class="property">settings</span>: {
+        <span class="property">slidesToShow</span>: <span class="number">3</span>,
+        <span class="property">slidesToScroll</span>: <span class="number">3</span>,
+        <span class="property">infinite</span>: <span class="boolean">true</span>,
+        <span class="property">dots</span>: <span class="boolean">true</span>
+      }
+    },
+    {
+      <span class="property">breakpoint</span>: <span class="number">600</span>,
+      <span class="property">settings</span>: {
+        <span class="property">slidesToShow</span>: <span class="number">2</span>,
+        <span class="property">slidesToScroll</span>: <span class="number">2</span>
+      }
+    },
+    {
+      <span class="property">breakpoint</span>: <span class="number">480</span>,
+      <span class="property">settings</span>: {
+        <span class="property">slidesToShow</span>: <span class="number">1</span>,
+        <span class="property">slidesToScroll</span>: <span class="number">1</span>
+      }
+    }
+  ]
+});</div>
+      
+      <div class="accessibility-tip">
+        <h4>TIP: Don't remove controls in smaller viewports!</h4>
+        <p>Never disable <strong>both</strong> the previous/next buttons and the slide dots! Some people use screen readers (like VoiceOver and TalkBack), while others can't do gestures. Be sure to give them at least one set of controls they can use.</p>
+      </div>
+    </div>
+    
+    <!-- Variable Width -->
+    <div class="demo-section">
+      <h2 id="variable-width">Variable Width</h2>
+      
+      <div class="slider variable-width">        
+        <div>
+          <div><p style="width: 125px;">125</p></div>
+        </div>
+        <div>
+          <div><p style="width: 150px;">150</p></div>
+        </div>
+        <div>
+          <div><p style="width: 175px;">175</p></div>
+        </div>
+        <div>
+          <div><p style="width: 200px;">200</p></div>
+        </div>
+        <div>
+          <div><p style="width: 225px;">225</p></div>
+        </div>
+        <div>
+          <div><p style="width: 300px;">300</p></div>
+        </div>    
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">dots</span>: <span class="boolean">true</span>,
+  <span class="property">infinite</span>: <span class="boolean">true</span>,
+  <span class="property">speed</span>: <span class="number">300</span>,
+  <span class="property">slidesToShow</span>: <span class="number">1</span>,
+  <span class="property">centerMode</span>: <span class="boolean">true</span>,
+  <span class="property">variableWidth</span>: <span class="boolean">true</span>
+});</div>
+    </div>
+    
+    <!-- Adaptive Height -->
+    <div class="demo-section">
+      <h2 id="adaptive-height">Adaptive Height</h2>
+      
+      <div class="slider adaptive-height">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p><p>Look ma!</p></div>
+        </div>
+        <div>
+          <div><p>3</p><p>Check<br>this out!</p></div>
+        </div>
+        <div>
+          <div><p>4</p><p>Woo!</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">dots</span>: <span class="boolean">true</span>,
+  <span class="property">infinite</span>: <span class="boolean">true</span>,
+  <span class="property">speed</span>: <span class="number">300</span>,
+  <span class="property">slidesToShow</span>: <span class="number">1</span>,
+  <span class="property">adaptiveHeight</span>: <span class="boolean">true</span>
+});</div>
+    </div>
+    
+    <!-- Center Mode -->
+    <div class="demo-section">
+      <h2 id="center-mode">Center Mode</h2>
+      
+      <div class="slider center">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+        <div>
+          <div><p>6</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">centerMode</span>: <span class="boolean">true</span>,
+  <span class="property">centerPadding</span>: <span class="string">'60px'</span>,
+  <span class="property">slidesToShow</span>: <span class="number">3</span>,
+  <span class="property">responsive</span>: [
+    {
+      <span class="property">breakpoint</span>: <span class="number">768</span>,
+      <span class="property">settings</span>: {
+        <span class="property">arrows</span>: <span class="boolean">false</span>,
+        <span class="property">dots</span>: <span class="boolean">true</span>,
+        <span class="property">centerMode</span>: <span class="boolean">true</span>,
+        <span class="property">centerPadding</span>: <span class="string">'40px'</span>,
+        <span class="property">slidesToShow</span>: <span class="number">3</span>
+      }
+    },
+    {
+      <span class="property">breakpoint</span>: <span class="number">480</span>,
+      <span class="property">settings</span>: {
+        <span class="property">arrows</span>: <span class="boolean">false</span>,
+        <span class="property">dots</span>: <span class="boolean">true</span>,
+        <span class="property">centerMode</span>: <span class="boolean">true</span>,
+        <span class="property">centerPadding</span>: <span class="string">'40px'</span>,
+        <span class="property">slidesToShow</span>: <span class="number">1</span>
+      }
+    }
+  ]
+});</div>
+    </div>
+    
+    <!-- Autoplay -->
+    <div class="demo-section">
+      <h2 id="autoplay">Autoplay</h2>
+      
+      <div class="slider autoplay">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+        <div>
+          <div><p>6</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">slidesToShow</span>: <span class="number">3</span>,
+  <span class="property">slidesToScroll</span>: <span class="number">1</span>,
+  <span class="property">autoplay</span>: <span class="boolean">true</span>,
+  <span class="property">autoplaySpeed</span>: <span class="number">2000</span>
+});</div>
+      
+      <div class="accessibility-tip">
+        <h4>TIP: don't remove the pause button!</h4>
+        <p><strong>DO NOT</strong> disable the autoplay pause/play button unless you are replacing it with a reasonable alternative mechanism for pausing, stopping, or hiding the carousel (WCAG 2.2.2).</p>
+        <p>If you know what you are doing, set <code>useAutoplayToggleButton</code> to <code>false</code> to get rid of the button.</p>
+      </div>
+    </div>
+    
+    <!-- Add & Remove -->
+    <div class="demo-section">
+      <h2 id="lazy-load">Lazy Load</h2>
+
+      <div class="slider image-slider lazy-load-slider">
+        <div>
+          <div class="image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="docs/images/examples/ai-01.svg" alt="AI generated abstract scene 1" loading="lazy"></div>
+        </div>
+        <div>
+          <div class="image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="docs/images/examples/ai-02.svg" alt="AI generated abstract scene 2" loading="lazy"></div>
+        </div>
+        <div>
+          <div class="image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="docs/images/examples/ai-03.svg" alt="AI generated abstract scene 3" loading="lazy"></div>
+        </div>
+        <div>
+          <div class="image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="docs/images/examples/ai-04.svg" alt="AI generated abstract scene 4" loading="lazy"></div>
+        </div>
+        <div>
+          <div class="image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="docs/images/examples/ai-05.svg" alt="AI generated abstract scene 5" loading="lazy"></div>
+        </div>
+        <div>
+          <div class="image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-lazy="docs/images/examples/ai-06.svg" alt="AI generated abstract scene 6" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">lazyLoad</span>: <span class="string">'ondemand'</span>,
+  <span class="property">slidesToShow</span>: <span class="number">3</span>,
+  <span class="property">slidesToScroll</span>: <span class="number">1</span>
+});</div>
+    </div>
+
+    <div class="demo-section">
+      <h2 id="fade-demo">Fade</h2>
+
+      <div class="slider image-slider fade-demo-slider">
+        <div>
+          <div class="image"><img src="docs/images/examples/ai-07.svg" alt="AI generated abstract scene 7"></div>
+        </div>
+        <div>
+          <div class="image"><img src="docs/images/examples/ai-08.svg" alt="AI generated abstract scene 8"></div>
+        </div>
+        <div>
+          <div class="image"><img src="docs/images/examples/ai-01.svg" alt="AI generated abstract scene 1"></div>
+        </div>
+        <div>
+          <div class="image"><img src="docs/images/examples/ai-03.svg" alt="AI generated abstract scene 3"></div>
+        </div>
+      </div>
+
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">fade</span>: <span class="boolean">true</span>,
+  <span class="property">arrows</span>: <span class="boolean">true</span>,
+  <span class="property">dots</span>: <span class="boolean">true</span>,
+  <span class="property">speed</span>: <span class="number">500</span>,
+  <span class="property">infinite</span>: <span class="boolean">true</span>,
+  <span class="property">cssEase</span>: <span class="string">'linear'</span>
+});</div>
+    </div>
+
+    <div class="demo-section">
+      <h2 id="destroy-demo">Destroy / Rebuild</h2>
+
+      <div class="slider destroy-demo-slider">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <a href="javascript:void(0)" class="button js-destroy-slider">Destroy</a>
+        <a href="javascript:void(0)" class="button js-rebuild-slider">Rebuild</a>
+      </div>
+
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">dots</span>: <span class="boolean">true</span>,
+  <span class="property">slidesToShow</span>: <span class="number">2</span>
+});
+
+slider.destroy();
+slider = <span class="keyword">new</span> SlickSlider(element, options);</div>
+    </div>
+
+    <!-- Add & Remove -->
+    <div class="demo-section">
+      <h2 id="add-remove">Add &amp; Remove</h2>
+      
+      <div class="slider add-remove">
+        <div>
+          <div><p>1</p></div>
+        </div>
+      </div>
+      
+      <div class="buttons">
+        <a href="javascript:void(0)" class="button js-add-slide">Add Slide</a>
+        <a href="javascript:void(0)" class="button js-remove-slide">Remove Slide</a>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">slidesToShow</span>: <span class="number">3</span>,
+  <span class="property">slidesToScroll</span>: <span class="number">3</span>
+});
+
+<span class="comment">// Add slide</span>
+slider.slickAdd(<span class="string">'&lt;div&gt;&lt;p&gt;' + (slideIndex++) + '&lt;/p&gt;&lt;/div&gt;'</span>);
+
+<span class="comment">// Remove slide</span>
+slider.slickRemove(slideIndex - <span class="number">1</span>);</div>
+    </div>
+    
+    <!-- Filtering -->
+    <div class="demo-section">
+      <h2 id="filtering">Filtering</h2>
+      
+      <div class="slider filtering">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+        <div>
+          <div><p>6</p></div>
+        </div>
+        <div>
+          <div><p>7</p></div>
+        </div>
+        <div>
+          <div><p>8</p></div>
+        </div>
+        <div>
+          <div><p>9</p></div>
+        </div>
+        <div>
+          <div><p>10</p></div>
+        </div>
+        <div>
+          <div><p>11</p></div>
+        </div>
+        <div>
+          <div><p>12</p></div>
+        </div>
+      </div>
+      
+      <div class="filter">
+        <a href="javascript:void(0)" class="button js-filter">Filter Slides</a>
+      </div>
+      
+      <div class="code-block">const slider = new SlickSlider(element, {
+  slidesToShow: 4,
+  slidesToScroll: 4
+});
+
+let filtered = false;
+document.querySelector('.js-filter').addEventListener('click', function() {
+  if (!filtered) {
+    slider.slickFilter(':even');
+    this.textContent = 'Unfilter Slides';
+    filtered = true;
+  } else {
+    slider.slickUnfilter();
+    this.textContent = 'Filter Slides';
+    filtered = false;
+  }
+});</div>
+    </div>
+    
+    <!-- Slider Syncing -->
+    <div class="demo-section">
+      <h2 id="slider-syncing">Slider Syncing</h2>
+      
+      <div class="slider slider-for">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+      </div>
+      
+      <div class="slider slider-nav" style="margin-top: 1rem;">
+        <div>
+          <div><p style="padding: 1.5rem; font-size: 1.5rem;">1</p></div>
+        </div>
+        <div>
+          <div><p style="padding: 1.5rem; font-size: 1.5rem;">2</p></div>
+        </div>
+        <div>
+          <div><p style="padding: 1.5rem; font-size: 1.5rem;">3</p></div>
+        </div>
+        <div>
+          <div><p style="padding: 1.5rem; font-size: 1.5rem;">4</p></div>
+        </div>
+        <div>
+          <div><p style="padding: 1.5rem; font-size: 1.5rem;">5</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block">const sliderFor = new SlickSlider(document.querySelector('.slider-for'), {
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+  fade: true,
+  asNavFor: '.slider-nav'
+});
+
+const sliderNav = new SlickSlider(document.querySelector('.slider-nav'), {
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  asNavFor: '.slider-for',
+  dots: true,
+  centerMode: true,
+  focusOnSelect: true
+});</div>
+      
+      <div class="accessibility-tip">
+        <h4>TIP: always explain how sliders are synced!</h4>
+        <p>Use the <code>instructionsText</code> setting to provide clear, simple instructions for screen reader users to explain what happens when they interact with these sliders.</p>
+      </div>
+    </div>
+    
+    <!-- Right to Left -->
+    <div class="demo-section">
+      <h2 id="rtl">Right to Left</h2>
+      
+      <div dir="rtl" class="slider single-item-rtl">
+        <div>
+          <div><p>1</p></div>
+        </div>
+        <div>
+          <div><p>2</p></div>
+        </div>
+        <div>
+          <div><p>3</p></div>
+        </div>
+        <div>
+          <div><p>4</p></div>
+        </div>
+        <div>
+          <div><p>5</p></div>
+        </div>
+        <div>
+          <div><p>6</p></div>
+        </div>
+      </div>
+      
+      <div class="code-block"><span class="keyword">const</span> slider = <span class="keyword">new</span> SlickSlider(element, {
+  <span class="property">rtl</span>: <span class="boolean">true</span>
+});</div>
+      
+      <p><strong>Note:</strong> the HTML tag of the slider, or the parent element of the slider, must have the attribute <code>dir="rtl"</code>.</p>
+    </div>
+    
+    <div class="info-box">
+      <h3>📚 More Features</h3>
+      <p>This vanilla JavaScript version supports all the features of the original accessible-slick, including:</p>
+      <ul>
+        <li>✅ Drag and swipe support (mouse and touch)</li>
+        <li>✅ Keyboard navigation</li>
+        <li>✅ Full WCAG 2.2 compliance</li>
+        <li>✅ No jQuery dependency</li>
+        <li>✅ Modern ES modules, CommonJS, and IIFE builds</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script src="slick/dist/slick.min.js"></script>
+  <script>
+    // Single Item
+    const slider1 = new slickModule.SlickSlider(
+      document.querySelector('.single-item'), {}
+    );
+    
+    // Multiple Items
+    const slider2 = new slickModule.SlickSlider(
+      document.querySelector('.multiple-items'),
+      {
+        infinite: true,
+        slidesToShow: 3,
+        slidesToScroll: 3
+      }
+    );
+    
+    // Responsive Display
+    const slider3 = new slickModule.SlickSlider(
+      document.querySelector('.responsive'),
+      {
+        dots: true,
+        infinite: false,
+        speed: 300,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        responsive: [
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 3,
+              infinite: true,
+              dots: true
+            }
+          },
+          {
+            breakpoint: 600,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2
+            }
+          },
+          {
+            breakpoint: 480,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1
+            }
+          }
+        ]
+      }
+    );
+    
+    // Variable Width (Note: requires implementation)
+    const slider4 = new slickModule.SlickSlider(
+      document.querySelector('.variable-width'),
+      {
+        dots: true,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 1,
+        centerMode: true,
+        variableWidth: true
+      }
+    );
+    
+    // Adaptive Height
+    const slider5 = new slickModule.SlickSlider(
+      document.querySelector('.adaptive-height'),
+      {
+        dots: true,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 1,
+        adaptiveHeight: true
+      }
+    );
+    
+    // Center Mode
+    const slider6 = new slickModule.SlickSlider(
+      document.querySelector('.center'),
+      {
+        centerMode: true,
+        centerPadding: '60px',
+        slidesToShow: 3,
+        responsive: [
+          {
+            breakpoint: 768,
+            settings: {
+              arrows: false,
+              dots: true,
+              centerMode: true,
+              centerPadding: '40px',
+              slidesToShow: 3
+            }
+          },
+          {
+            breakpoint: 480,
+            settings: {
+              arrows: false,
+              dots: true,
+              centerMode: true,
+              centerPadding: '40px',
+              slidesToShow: 1
+            }
+          }
+        ]
+      }
+    );
+    
+    // Autoplay
+    const slider7 = new slickModule.SlickSlider(
+      document.querySelector('.autoplay'),
+      {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000
+      }
+    );
+
+    // Lazy Load
+    const sliderLazy = new slickModule.SlickSlider(
+      document.querySelector('.lazy-load-slider'),
+      {
+        lazyLoad: 'ondemand',
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        dots: true
+      }
+    );
+
+    function hydrateLazyImages(sliderInstance) {
+      const loadVisible = () => {
+        const candidates = sliderInstance.element.querySelectorAll('.slick-active img[data-lazy], .slick-current img[data-lazy]');
+        candidates.forEach((img) => {
+          const source = img.getAttribute('data-lazy');
+          if (!source) return;
+          img.setAttribute('src', source);
+          img.removeAttribute('data-lazy');
+        });
+      };
+
+      sliderInstance.on('init', loadVisible);
+      sliderInstance.on('afterChange', loadVisible);
+      loadVisible();
+    }
+
+    hydrateLazyImages(sliderLazy);
+
+    // Fade
+    const sliderFade = new slickModule.SlickSlider(
+      document.querySelector('.fade-demo-slider'),
+      {
+        fade: true,
+        arrows: true,
+        dots: true,
+        speed: 500,
+        infinite: true,
+        cssEase: 'linear'
+      }
+    );
+
+    // Destroy / Rebuild
+    const destroyContainer = document.querySelector('.destroy-demo-slider');
+    const destroySlidesMarkup = destroyContainer.innerHTML;
+    let sliderDestroy = new slickModule.SlickSlider(
+      destroyContainer,
+      {
+        dots: true,
+        slidesToShow: 2,
+        slidesToScroll: 1
+      }
+    );
+
+    document.querySelector('.js-destroy-slider').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (!sliderDestroy) return;
+      sliderDestroy.unload();
+      sliderDestroy.destroy();
+      sliderDestroy = null;
+    });
+
+    document.querySelector('.js-rebuild-slider').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (sliderDestroy) return;
+      destroyContainer.innerHTML = destroySlidesMarkup;
+      sliderDestroy = new slickModule.SlickSlider(
+        destroyContainer,
+        {
+          dots: true,
+          slidesToShow: 2,
+          slidesToScroll: 1
+        }
+      );
+    });
+    
+    // Add & Remove
+    const slider8 = new slickModule.SlickSlider(
+      document.querySelector('.add-remove'),
+      {
+        slidesToShow: 3,
+        slidesToScroll: 3
+      }
+    );
+    
+    let slideIndex = 1;
+    document.querySelector('.js-add-slide').addEventListener('click', function(e) {
+      e.preventDefault();
+      slideIndex++;
+      slider8.slickAdd(`<div><p>${slideIndex}</p></div>`);
+    });
+    
+    document.querySelector('.js-remove-slide').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (slider8.state.slideCount > 0 && slideIndex !== 0) {
+        slider8.slickRemove(slideIndex - 1);
+        slideIndex--;
+      }
+    });
+    
+    // Filtering
+    const slider9 = new slickModule.SlickSlider(
+      document.querySelector('.filtering'),
+      {
+        slidesToShow: 4,
+        slidesToScroll: 4
+      }
+    );
+    
+    let filtered = false;
+    document.querySelector('.js-filter').addEventListener('click', function() {
+      if (!filtered) {
+        slider9.slickFilter(':even');
+        this.textContent = 'Unfilter Slides';
+        filtered = true;
+      } else {
+        slider9.slickUnfilter();
+        this.textContent = 'Filter Slides';
+        filtered = false;
+      }
+    });
+    
+    // Slider Syncing (Note: requires asNavFor implementation)
+    const sliderFor = new slickModule.SlickSlider(
+      document.querySelector('.slider-for'),
+      {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        fade: true,
+        asNavFor: '.slider-nav'
+      }
+    );
+    
+    const sliderNav = new slickModule.SlickSlider(
+      document.querySelector('.slider-nav'),
+      {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        asNavFor: '.slider-for',
+        dots: true,
+        centerMode: true,
+        focusOnSelect: true
+      }
+    );
+    
+    // Right to Left
+    const slider11 = new slickModule.SlickSlider(
+      document.querySelector('.single-item-rtl'),
+      {
+        rtl: true
+      }
+    );
+  </script>
+</body>
+</html>

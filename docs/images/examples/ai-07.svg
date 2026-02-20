@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="1" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#241734"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g opacity="0.45" fill="#e9d5ff">
+    <path d="M140 620L340 220L540 620Z"/>
+    <path d="M420 620L620 260L820 620Z"/>
+    <path d="M700 620L860 310L1020 620Z"/>
+  </g>
+  <g stroke="#ffffff" stroke-opacity="0.35" fill="none">
+    <path d="M120 700C300 640 450 740 620 680S940 620 1080 670" stroke-width="2"/>
+  </g>
+  <text x="60" y="760" fill="#ffffff" opacity="0.82" font-family="Arial, sans-serif" font-size="34">AI Concept 07 · Violet Ridges</text>
+</svg>

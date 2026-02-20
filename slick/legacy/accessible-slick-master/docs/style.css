@@ -1,6 +1,6 @@
 :root {
-  --alternative-color--light: #c2ccd0;
-  --alternative-color--dark: #2e3f45;
+  --alternative-color--light: #e3f2df;
+  --alternative-color--dark: #2c5e39;
   --focus-outline-color: orange;
 }
 
@@ -131,7 +131,7 @@ p {
 
   .fixed-header .header-content {
     margin: auto;
-    width: 700px;
+    width: 600px;
   }
 
   .fixed-header h1.title {
@@ -173,11 +173,6 @@ ul.nav {
       color: var(--alternative-color--dark);
     }
 
-    .header ul.nav li a,
-    .fixed-header ul.nav li a {
-      color: #fff;
-    }
-
       ul.nav li a:hover,
       ul.nav li a:focus {
         text-decoration: underline;
@@ -192,21 +187,6 @@ ul.nav {
         background-color: black;
         color: white;
       }
-
-    .header ul.nav li a:hover,
-    .header ul.nav li a:focus,
-    .fixed-header ul.nav li a:hover,
-    .fixed-header ul.nav li a:focus {
-      background-color: rgba(0, 0, 0, 0.35);
-      color: #fff;
-      text-decoration: underline;
-    }
-
-    .header ul.nav li a:focus,
-    .fixed-header ul.nav li a:focus {
-      outline: 2px solid #fff;
-      outline-offset: 2px;
-    }
 
 @media (max-width: 420px) {
   ul.nav li a {
@@ -225,11 +205,6 @@ ul.nav {
   top: 40px;
   font-size: 80px;
   color: var(--alternative-color--dark);
-}
-
-.header .github-link,
-.fixed-header .github-link {
-  color: #fff;
 }
 
   @media screen and (max-width: 1280px) {
@@ -502,7 +477,8 @@ td code {
 }
 
 .adaptive-height .slick-slide,
-.lazy .slick-slide {
+.lazy .slick-slide,
+.fade .slick-slide {
   height: auto;
   min-height: 100px;
 }
@@ -524,30 +500,15 @@ td code {
 }
 
 /** Image sliders (Lazy Loading and Fade) */
-.fade .slick-slide {
+.image-slider .image {
   padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 400px;
 }
 
-.lazy .slick-slide {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.image-slider .slick-slide img {
-  border: 5px solid #fff;
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 380px;
-  object-fit: contain;
-}
+  .image-slider .slick-slide img {
+    border: 5px solid #fff;
+    display: block;
+    width: 100%;
+  }
 
     .image-slider .slick-slide img.slick-loading {
       border: 0;
@@ -765,75 +726,3 @@ table {
   .skip-link:hover {
     text-decoration: underline;
   }
-
-
-/************************************
-  White sections (light background)
-*************************************/
-section.white {
-  background: #fff !important;
-  color: #1a1a2e !important;
-  border-color: #ccc !important;
-}
-
-section.white h2,
-section.white h3,
-section.white h4,
-section.white h5,
-section.white h6 {
-  color: #1a1a2e !important;
-}
-
-section.white p,
-section.white li {
-  color: #333 !important;
-}
-
-section.white code {
-  background: #f5f5f5 !important;
-  color: #d63384 !important;
-  border: 1px solid #ddd !important;
-}
-
-section.white pre {
-  background: #1a1a2e !important;
-  color: #e0e0e0 !important;
-  border: none !important;
-  border-left: 4px solid #667eea !important;
-}
-
-section.white pre code {
-  background: #1a1a2e !important;
-  color: #e0e0e0 !important;
-  border: none !important;
-}
-
-section.white a {
-  color: #0066cc !important;
-}
-
-section.white a:hover {
-  color: #0052a3 !important;
-}
-
-section.white hr {
-  border-top: 1px solid #ccc !important;
-  background: #ccc !important;
-}
-
-section.white .button,
-section.white button {
-  background: #2e3f45 !important;
-  color: #fff !important;
-  border: 2px solid #2e3f45 !important;
-}
-
-section.white .button:hover,
-section.white .button:focus,
-section.white button:hover,
-section.white button:focus {
-  background: #667eea !important;
-  color: #fff !important;
-  border: 2px solid #667eea !important;
-  text-decoration: underline !important;
-}
