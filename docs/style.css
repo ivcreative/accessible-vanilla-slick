@@ -24,7 +24,17 @@ html {
   text-rendering: optimizeLegibility;
   width: 100%;
 }
+/* Enhanced focus styles for better accessibility */
+*:focus-visible {
+  outline: 3px solid var(--primary-gradient);
+  outline-offset: 2px;
+}
 
+button:focus-visible,
+a:focus-visible {
+  outline: 3px dashed #fff;
+  outline-offset: 2px;
+}
   body {
     padding-bottom: 50px !important;
   }
@@ -896,15 +906,19 @@ h1, h2, h3, h4, h5, h6 {
   color: #fff !important;
 }
 
-.button, button {
+/* Exclude slider controls from button styling */
+.button:not(.slick-prev):not(.slick-next):not(.slick-dots),
+button:not(.slick-prev):not(.slick-next):not(.slick-dots) {
   background: var(--button-bg) !important;
   color: white !important;
   border: none !important;
   transition: background 0.3s ease;
 }
 
-.button:hover, button:hover,
-.button:focus, button:focus {
+.button:hover:not(.slick-prev):not(.slick-next):not(.slick-dots),
+button:hover:not(.slick-prev):not(.slick-next):not(.slick-dots),
+.button:focus:not(.slick-prev):not(.slick-next):not(.slick-dots),
+button:focus:not(.slick-prev):not(.slick-next):not(.slick-dots) {
   background: var(--button-hover) !important;
   color: white !important;
 }
