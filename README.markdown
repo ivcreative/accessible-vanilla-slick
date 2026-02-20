@@ -3,13 +3,13 @@ accessible-slick
 
 _the last (accessible) carousel you'll ever need_
 
-A highly accessible, WCAG 2.0 / 2.1 compliant, drop-in replacement for Slick Slider (1.8.1) intended to make life easier for real-world dev teams who need to pass accessibility audits.
+A highly accessible, WCAG 2.2 compliant, drop-in replacement for Slick Slider (1.8.1) intended to make life easier for real-world dev teams who need to pass accessibility audits.
 
-This package implements [accessibility and usability improvements](#what-makes-this-accessible) crafted and tested by native screen reader users, low vision users, and expert accessibility consultants at [Accessible360](https://accessible360.com) based on their experiences helping to make hundreds of carousels accessible for clients around the world. Read on to learn more about [why this package exists](#why-is-this-needed), its [features](#what-makes-this-accessible), [how to use it](#usage), and [how you can get involved!](#contributing)
+This package is a vanilla ES6 JavaScript rewrite that implements [accessibility and usability improvements](#what-makes-this-accessible) crafted and tested by native screen reader users, low vision users, and expert accessibility consultants. Built with no jQuery dependency, it maintains all the accessibility features developers need while providing modern, lightweight carousel functionality. Read on to learn more about [why this package exists](#why-is-this-needed), its [features](#what-makes-this-accessible), [how to use it](#usage), and [how you can get involved!](#contributing)
 
 #### Demo
 
-https://accessible360.github.io/accessible-slick
+https://ivcreative.github.io/accessible-vanilla-slick/
 
 Also check out this [collection of ready-to-use demos on CodePen](https://codepen.io/collection/nwRGZk) for common scenarios like hero banners, scrolling product cards, PDP thumbnail images, and more!
 
@@ -21,23 +21,23 @@ Just add a link to the CSS file in your `<head>`:
 
 ```html
 <!-- Add the core slick.min.css -->
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.css">
 
 <!-- Add ONE of the theme files (accessible version or original) -->
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/accessible-slick-theme.min.css">
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/accessible-slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/slick-theme.min.css">
 ```
 
 Then, before your closing `<body>` tag add:
 
 ```html
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/@accessible360/accessible-slick@1.0.1/slick/slick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.js"></script>
 ```
 
 #### Package Managers
 
 ```sh
-npm install @accessible360/accessible-slick
+npm install accessible-vanilla-slick
 ```
 
 ## Why is this needed?
@@ -48,7 +48,7 @@ As one of the most widely used carousel packages out there, Slick Slider has man
 
 In the long term it'd be great to contribute some improvements to the core Slick Slider repo, but that may or may not be possible considering it's [been abandoned](https://github.com/kenwheeler/slick/graphs/code-frequency) (but not deprecated) by it's original author since 2016. A maintainer or two has recently stepped up to resume development, but with over [1,000 open issues](https://github.com/kenwheeler/slick/issues?q=is%3Aissue+is%3Aopen+accessibility) and nearly [200 open PRs](https://github.com/kenwheeler/slick/pulls?q=is%3Apr+is%3Aopen+accessibility) (some with conflicting approaches), its unlikely that the big fixes needed will make their way to the master branch any time soon.
 
-In the short term, we're releasing our take on an accessible Slick Slider implementation as a fork that respects the original functionality and API features as much as possible so you can improve the accessibility of your carousels **right now**! We'll make it available through all the same channels (like NPM and jsDelivr) so upgrading is as easy as changing the URLs in your `<link>` and `<script>` tags without having to even _touch_ your existing JavaScript code!
+In the short term, an accessible jQuery version of Slick was created, but that project also appears to have been abandoned. This vanilla ES6 version was created as a modern alternative that steps away from the jQuery dependency entirely, providing a lightweight, maintainable, and truly accessible carousel solution for today's JavaScript ecosystem. The vanilla implementation respects the original functionality and API features as much as possible so you can improve the accessibility of your carousels **right now**! It's available through NPM and jsDelivr so upgrading is as easy as changing the URLs in your `<link>` and `<script>` tags—and unlike the original, you get modern ES6 JavaScript without any jQuery overhead!
 
 
 ## What makes this accessible?
@@ -188,13 +188,13 @@ grunt
 
 ## Contributing
 
-[See the contributing guidelines.](https://github.com/Accessible360/accessible-slick/blob/master/CONTRIBUTING.md)
+[See the contributing guidelines.](https://github.com/ivcreative/accessible-vanilla-slick/blob/master/CONTRIBUTING.md)
 
 
 ## Credits
 
 Massive kudos to [Ken Wheeler](https://github.com/kenwheeler) and the entire [Slick Slider community](https://github.com/kenwheeler/slick) for creating the original package.
 
-This fork was started by [Jason Webb](https://github.com/jasonwebb), Developer Advocate at <a href="https://accessible360.com" target="_blank">Accessible360</a>.
+The accessible jQuery fork was created by [Jason Webb](https://github.com/jasonwebb), Developer Advocate at <a href="https://accessible360.com" target="_blank">Accessible360</a>, and the team at Accessible360 who contributed extensive accessibility research, testing with native screen reader users, and expert accessibility consultation to ensure a truly accessible carousel implementation.
 
-<a href="https://accessible360.com" target="_blank"><img src="https://raw.githubusercontent.com/Accessible360/accessible-slick/master/docs/images/accessible360-logo.png" alt="Accessible360 logo with tagline Better. For All." width="400"></a>
+The vanilla version of this package was created by [Miguel Quintero](https://github.com/ivcreative) to maintain and distribute this accessible carousel as an independent, community-supported project.
