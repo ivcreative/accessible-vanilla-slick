@@ -2,6 +2,13 @@
   --alternative-color--light: #c2ccd0;
   --alternative-color--dark: #2e3f45;
   --focus-outline-color: orange;
+  --bg-dark: #1a1a2e;
+  --bg-section: #2a2a3e;
+  --text-light: #e0e0e0;
+  --border-color: #3a3a4e;
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --button-bg: #667eea;
+  --button-hover: #5567d8;
 }
 
 * {
@@ -10,7 +17,7 @@
 
 body,
 html {
-  background: #fff;
+  background: var(--bg-dark);
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
@@ -483,6 +490,10 @@ td code {
   Demos
 ***************/
 /** All sliders */
+.slick-slide {
+  height: auto;
+}
+
 .slick-autoplay-toggle-button,
 .slick-prev .slick-prev-icon, .slick-next .slick-next-icon,
 .slick-dots li button .slick-dot-icon,
@@ -836,4 +847,112 @@ section.white button:focus {
   color: #fff !important;
   border: 2px solid #667eea !important;
   text-decoration: underline !important;
+}
+
+.slick-slide {
+  height: auto;
+}
+
+
+/****************************
+  Dark Theme Overrides
+****************************/
+body {
+  background: var(--bg-dark) !important;
+  color: var(--text-light) !important;
+}
+
+.header {
+  background: var(--primary-gradient);
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.header .title,
+.header .subheading {
+  color: #fff !important;
+}
+
+main {
+  background: var(--bg-section);
+  margin: 1rem;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  border: 1px solid var(--border-color);
+}
+
+section {
+  background: var(--bg-dark);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #fff !important;
+}
+
+.button, button {
+  background: var(--button-bg) !important;
+  color: white !important;
+  border: none !important;
+  transition: background 0.3s ease;
+}
+
+.button:hover, button:hover,
+.button:focus, button:focus {
+  background: var(--button-hover) !important;
+  color: white !important;
+}
+
+.slider > div > div > p {
+  background: var(--primary-gradient) !important;
+  color: white !important;
+  padding: 3rem !important;
+  border-radius: 4px !important;
+  font-size: 3rem !important;
+  font-weight: bold !important;
+}
+
+.slider > div > div:nth-child(2n) > p {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+
+.slider > div > div:nth-child(3n) > p {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+}
+
+.slider > div > div:nth-child(4n) > p {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+}
+
+.slider > div > div:nth-child(5n) > p {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+}
+
+.fixed-header {
+  background: var(--bg-section) !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.fixed-header .title {
+  color: #fff !important;
+}
+
+code {
+  background: var(--bg-dark);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  color: #a5d6ff;
+}
+
+pre {
+  background: var(--bg-dark) !important;
+  border-left: 4px solid var(--button-bg);
+  padding: 1.25rem;
+  border-radius: 4px;
 }
