@@ -1106,7 +1106,9 @@ JS
         speed: 500
       }
     );
-    applyInlineLazyImages(document.querySelector('.lazy'));
+    // COMMENTED OUT: Let the slider's built-in lazy loading handle image loading
+    // If images don't load, uncomment this line to preload all images at initialization:
+    // applyInlineLazyImages(document.querySelector('.lazy'));
 
     // Autoplay
     const slider9 = initSlider(
