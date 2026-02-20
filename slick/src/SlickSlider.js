@@ -62,8 +62,23 @@ export class SlickSlider {
     this.instanceId = uniqueId('slick');
     this.constructor.INSTANCES.set(this.instanceId, this);
     
-    // Setup default options
-    this.options = extend({}, this.constructor.DEFAULTS, options);
+    // Parse data-slick attribute if no options provided
+    const dataSlickAttr = getAttribute(element, 'data-slick');
+    let dataSlickOptions = {};
+    
+    if (dataSlickAttr) {
+      try {
+        // Parse JSON from data attribute
+        // Handle HTML entities like &quot; being decoded by getAttribute
+        const jsonStr = dataSlickAttr.replace(/&quot;/g, '"');
+        dataSlickOptions = JSON.parse(jsonStr);
+      } catch (e) {
+        console.warn('Invalid data-slick JSON:', dataSlickAttr, e);
+      }
+    }
+    
+    // Merge: defaults -> data attribute -> passed options (later overrides earlier)
+    this.options = extend({}, this.constructor.DEFAULTS, dataSlickOptions, options);
     
     // Store original options for responsive reversion
     this.originalOptions = extend({}, this.options);

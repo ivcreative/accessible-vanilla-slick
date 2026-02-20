@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Data Slick Attribute Parsing</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.2/slick/dist/slick.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .slider {
+            margin: 20px 0;
+        }
+        .slider > div {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        h2 {
+            color: #333;
+        }
+        .code {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Data-Slick Attribute Parsing</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Data Attribute 4 Slides per View</h2>
+        <p>This slider should show 4 items at a time using data-slick attribute</p>
+        <div class="code">&lt;div class="data-test-1" data-slick='{&quot;slidesToShow&quot;: 4, &quot;slidesToScroll&quot;: 4, &quot;dots&quot;: true}'&gt;</div>
+        
+        <div class="data-test-1 slider" data-slick='{"slidesToShow": 4, "slidesToScroll": 4, "dots": true}'>
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+            <div>6</div>
+            <div>7</div>
+            <div>8</div>
+        </div>
+        <div id="result1" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Data Attribute with Infinite Scroll</h2>
+        <p>This slider should enable infinite scroll via data-slick attribute</p>
+        <div class="code">&lt;div class="data-test-2" data-slick='{&quot;slidesToShow&quot;: 3, &quot;infinite&quot;: true, &quot;dots&quot;: true}'&gt;</div>
+        
+        <div class="data-test-2 slider" data-slick='{"slidesToShow": 3, "infinite": true, "dots": true}'>
+            <div>A</div>
+            <div>B</div>
+            <div>C</div>
+            <div>D</div>
+            <div>E</div>
+            <div>F</div>
+        </div>
+        <div id="result2" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Data Attribute Overridden by Options</h2>
+        <p>Data attribute sets 2 items, but options should set to 1 (options take precedence)</p>
+        <div class="code">data-slick='{&quot;slidesToShow&quot;: 2}' + {slidesToShow: 1}</div>
+        
+        <div class="data-test-3 slider" data-slick='{"slidesToShow": 2, "dots": true}'>
+            <div>X</div>
+            <div>Y</div>
+            <div>Z</div>
+        </div>
+        <div id="result3" class="test-result"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.2/slick/dist/slick.min.js"></script>
+    
+    <script>
+        // Wait for slick to load
+        setTimeout(function() {
+            // Normalize globals
+            if (!window.slickModule || !window.slickModule.SlickSlider) {
+                window.slickModule = {
+                    SlickSlider: window.SlickSlider,
+                    default: window.Slick || window.SlickSlider
+                };
+            }
+
+            const SlickSliderCtor = window.slickModule && window.slickModule.SlickSlider;
+            
+            if (!SlickSliderCtor) {
+                alert('SlickSlider not loaded!');
+                return;
+            }
+
+            // Test 1: Data attribute parsing
+            try {
+                const slider1 = new SlickSliderCtor(
+                    document.querySelector('.data-test-1'),
+                    {}
+                );
+                
+                const result1Elem = document.getElementById('result1');
+                if (slider1 && slider1.options && slider1.options.slidesToShow === 4) {
+                    result1Elem.className = 'test-result success';
+                    result1Elem.textContent = '✓ SUCCESS: Data attribute parsed correctly! (slidesToShow = 4)';
+                } else {
+                    result1Elem.className = 'test-result error';
+                    result1Elem.textContent = '✗ FAILED: Data attribute not parsed. slidesToShow = ' + (slider1 ? slider1.options.slidesToShow : 'N/A');
+                }
+            } catch (e) {
+                document.getElementById('result1').className = 'test-result error';
+                document.getElementById('result1').textContent = '✗ ERROR: ' + e.message;
+            }
+
+            // Test 2: Complex data attribute
+            try {
+                const slider2 = new SlickSliderCtor(
+                    document.querySelector('.data-test-2'),
+                    {}
+                );
+                
+                const result2Elem = document.getElementById('result2');
+                if (slider2 && slider2.options && slider2.options.slidesToShow === 3 && slider2.options.infinite === true) {
+                    result2Elem.className = 'test-result success';
+                    result2Elem.textContent = '✓ SUCCESS: Complex data attribute parsed! (slidesToShow = 3, infinite = true)';
+                } else {
+                    result2Elem.className = 'test-result error';
+                    result2Elem.textContent = '✗ FAILED: slidesToShow = ' + (slider2 ? slider2.options.slidesToShow : 'N/A') + ', infinite = ' + (slider2 ? slider2.options.infinite : 'N/A');
+                }
+            } catch (e) {
+                document.getElementById('result2').className = 'test-result error';
+                document.getElementById('result2').textContent = '✗ ERROR: ' + e.message;
+            }
+
+            // Test 3: Options override data attribute
+            try {
+                const slider3 = new SlickSliderCtor(
+                    document.querySelector('.data-test-3'),
+                    { slidesToShow: 1 }
+                );
+                
+                const result3Elem = document.getElementById('result3');
+                if (slider3 && slider3.options && slider3.options.slidesToShow === 1) {
+                    result3Elem.className = 'test-result success';
+                    result3Elem.textContent = '✓ SUCCESS: Options override data attribute! (slidesToShow = 1, overrode data value of 2)';
+                } else {
+                    result3Elem.className = 'test-result error';
+                    result3Elem.textContent = '✗ FAILED: Options did not override. slidesToShow = ' + (slider3 ? slider3.options.slidesToShow : 'N/A');
+                }
+            } catch (e) {
+                document.getElementById('result3').className = 'test-result error';
+                document.getElementById('result3').textContent = '✗ ERROR: ' + e.message;
+            }
+        }, 100);
+    </script>
+</body>
+</html>
