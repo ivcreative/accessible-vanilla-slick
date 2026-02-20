@@ -22,14 +22,14 @@
     "url": "https://github.com/ivcreative/accessible-vanilla-slick.git"
   },
   "scripts": {
-    "clean": "rimraf slick/dist/*.min.css slick/dist/*.min.js",
+    "clean": "rimraf slick/dist/*.min.css slick/dist/*.min.js slick/dist/slick.js slick/dist/slick.esm.mjs slick/dist/slick.cjs",
     "build:css": "sass --style=compressed slick/slick.scss:slick/dist/slick.min.css slick/slick-theme.scss:slick/dist/slick-theme.min.css slick/accessible-slick-theme.scss:slick/dist/accessible-slick-theme.min.css",
-    "build:js": "esbuild slick/dist/slick.js --minify --outfile=slick/dist/slick.min.js",
+    "build:js": "esbuild slick/src/index.js --bundle --format=iife --global-name=slickModule --outfile=slick/dist/slick.js && esbuild slick/dist/slick.js --minify --outfile=slick/dist/slick.min.js",
     "build": "npm run clean && npm run build:css && npm run build:js",
     "prepublishOnly": "npm run build",
     "pack:check": "npm pack --dry-run",
     "watch:css": "sass --watch --style=compressed slick/slick.scss:slick/dist/slick.min.css slick/slick-theme.scss:slick/dist/slick-theme.min.css slick/accessible-slick-theme.scss:slick/dist/accessible-slick-theme.min.css",
-    "watch:js": "chokidar \"slick/dist/slick.js\" -c \"npm run build:js\"",
+    "watch:js": "chokidar \"slick/src/**\" -c \"npm run build:js\"",
     "watch": "npm-run-all --parallel watch:css watch:js"
   },
   "keywords": [

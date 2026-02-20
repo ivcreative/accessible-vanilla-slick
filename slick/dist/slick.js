@@ -331,7 +331,17 @@ var slickModule = (() => {
       this.element = element;
       this.instanceId = uniqueId("slick");
       this.constructor.INSTANCES.set(this.instanceId, this);
-      this.options = extend({}, this.constructor.DEFAULTS, options);
+      const dataSlickAttr = getAttribute(element, "data-slick");
+      let dataSlickOptions = {};
+      if (dataSlickAttr) {
+        try {
+          const jsonStr = dataSlickAttr.replace(/&quot;/g, '"');
+          dataSlickOptions = JSON.parse(jsonStr);
+        } catch (e) {
+          console.warn("Invalid data-slick JSON:", dataSlickAttr, e);
+        }
+      }
+      this.options = extend({}, this.constructor.DEFAULTS, dataSlickOptions, options);
       this.originalOptions = extend({}, this.options);
       this.state = extend({}, this.constructor.INITIAL_STATE);
       this.dispatcher = new EventDispatcher();
@@ -513,6 +523,20 @@ var slickModule = (() => {
       }
       if (this.options.responsive && this.options.responsive.length) {
         this.checkResponsive(true);
+      }
+      if (this.options.lazyLoad) {
+        if (this.options.lazyLoad === "progressive") {
+          this.progressiveLazyLoad();
+        } else {
+          this.lazyLoad();
+        }
+        this.dispatcher.addEventListener("afterChange", () => {
+          if (this.options.lazyLoad === "progressive") {
+            this.progressiveLazyLoad();
+          } else {
+            this.lazyLoad();
+          }
+        });
       }
       this.emit("init", { instance: this });
     }
@@ -1505,6 +1529,9 @@ var slickModule = (() => {
           addClass(allSlides[this.state.currentSlide], "slick-active");
           addClass(allSlides[this.state.currentSlide], "slick-current");
         }
+        if (this.options.lazyLoad === "ondemand" || this.options.lazyLoad === "anticipated") {
+          this.lazyLoad();
+        }
         return;
       }
       allSlides.forEach((slide) => {
@@ -1531,6 +1558,9 @@ var slickModule = (() => {
           }
         }
       });
+      if (this.options.lazyLoad === "ondemand" || this.options.lazyLoad === "anticipated") {
+        this.lazyLoad();
+      }
     }
     /**
      * Update arrow disabled states
@@ -2038,6 +2068,178 @@ var slickModule = (() => {
         remove(this.state.slideTrack);
         this.state.slideTrack = null;
       }
+    }
+    /**
+     * Load lazy images - handles data-lazy attribute on images
+     * Supports 'ondemand' and 'anticipated' lazy loading modes
+     */
+    lazyLoad() {
+      if (!this.options.lazyLoad)
+        return;
+      let rangeStart, rangeEnd, slideRange = [];
+      if (this.options.centerMode === true) {
+        if (this.options.infinite === true) {
+          rangeStart = this.state.currentSlide + (Math.floor(this.options.slidesToShow / 2) + 1);
+          rangeEnd = rangeStart + this.options.slidesToShow + 2;
+        } else {
+          rangeStart = Math.max(0, this.state.currentSlide - (Math.floor(this.options.slidesToShow / 2) + 1));
+          rangeEnd = 2 + Math.floor(this.options.slidesToShow / 2) + this.state.currentSlide;
+        }
+      } else {
+        rangeStart = this.options.infinite ? this.options.slidesToShow + this.state.currentSlide : this.state.currentSlide;
+        rangeEnd = Math.ceil(rangeStart + this.options.slidesToShow);
+        if (this.options.fade === true) {
+          if (rangeStart > 0)
+            rangeStart--;
+          if (rangeEnd < this.state.slideCount)
+            rangeEnd++;
+        }
+      }
+      const allSlides = selectAll(".slick-slide", this.state.slideTrack);
+      for (let i = rangeStart; i < rangeEnd; i++) {
+        if (allSlides[i]) {
+          slideRange.push(allSlides[i]);
+        }
+      }
+      if (this.options.lazyLoad === "anticipated") {
+        let prevSlide = rangeStart - 1;
+        let nextSlide = rangeEnd;
+        for (let i = 0; i < this.options.slidesToScroll; i++) {
+          if (prevSlide < 0)
+            prevSlide = this.state.slideCount - 1;
+          if (allSlides[prevSlide]) {
+            slideRange.unshift(allSlides[prevSlide]);
+          }
+          if (allSlides[nextSlide]) {
+            slideRange.push(allSlides[nextSlide]);
+          }
+          prevSlide--;
+          nextSlide++;
+        }
+      }
+      slideRange.forEach((slide) => {
+        this.loadImages(slide);
+      });
+      if (this.state.slideCount <= this.options.slidesToShow) {
+        const clonedSlides = selectAll(".slick-cloned", this.state.slideTrack);
+        clonedSlides.forEach((slide) => {
+          this.loadImages(slide);
+        });
+      } else if (this.state.currentSlide >= this.state.slideCount - this.options.slidesToShow) {
+        const clonedSlides = selectAll(".slick-cloned", this.state.slideTrack);
+        clonedSlides.slice(0, this.options.slidesToShow).forEach((slide) => {
+          this.loadImages(slide);
+        });
+      } else if (this.state.currentSlide === 0) {
+        const clonedSlides = selectAll(".slick-cloned", this.state.slideTrack);
+        clonedSlides.slice(this.options.slidesToShow * -1).forEach((slide) => {
+          this.loadImages(slide);
+        });
+      }
+    }
+    /**
+     * Load all unloaded images in a given scope
+     */
+    loadImages(imagesScope) {
+      const lazyImages = selectAll("img[data-lazy]", imagesScope);
+      lazyImages.forEach((img) => {
+        const imageSource = getAttribute(img, "data-lazy");
+        const imageSrcSet = getAttribute(img, "data-srcset");
+        const imageSizes = getAttribute(img, "data-sizes") || getAttribute(this.state.slideTrack, "data-sizes");
+        if (!imageSource)
+          return;
+        const imageToLoad = new Image();
+        imageToLoad.onload = () => {
+          const currentOpacity = window.getComputedStyle(img).opacity || "1";
+          const fadeDuration = 100;
+          const startTime = Date.now();
+          const fadeOutInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / fadeDuration, 1);
+            setStyle(img, "opacity", String(1 - progress));
+            if (progress >= 1) {
+              clearInterval(fadeOutInterval);
+              if (imageSrcSet) {
+                setAttribute(img, "srcset", imageSrcSet);
+              }
+              if (imageSizes) {
+                setAttribute(img, "sizes", imageSizes);
+              }
+              setAttribute(img, "src", imageSource);
+              const fadeInStart = Date.now();
+              const fadeInDuration = 200;
+              const fadeInInterval = setInterval(() => {
+                const inElapsed = Date.now() - fadeInStart;
+                const inProgress = Math.min(inElapsed / fadeInDuration, 1);
+                setStyle(img, "opacity", String(inProgress));
+                if (inProgress >= 1) {
+                  clearInterval(fadeInInterval);
+                  removeAttribute(img, "data-lazy");
+                  removeAttribute(img, "data-srcset");
+                  removeAttribute(img, "data-sizes");
+                  removeClass(img, "slick-loading");
+                  this.emit("lazyLoaded", { image: img, imageSource });
+                }
+              });
+            }
+          });
+        };
+        imageToLoad.onerror = () => {
+          removeAttribute(img, "data-lazy");
+          removeClass(img, "slick-loading");
+          addClass(img, "slick-lazyload-error");
+          this.emit("lazyLoadError", { image: img, imageSource });
+        };
+        addClass(img, "slick-loading");
+        imageToLoad.src = imageSource;
+      });
+    }
+    /**
+     * Progressive lazy load - loads images one at a time as they appear
+     */
+    progressiveLazyLoad(tryCount = 1) {
+      if (!this.options.lazyLoad || this.options.lazyLoad !== "progressive")
+        return;
+      const allLazyImages = selectAll("img[data-lazy]", this.state.slideTrack);
+      if (allLazyImages.length === 0)
+        return;
+      const img = allLazyImages[0];
+      const imageSource = getAttribute(img, "data-lazy");
+      const imageSrcSet = getAttribute(img, "data-srcset");
+      const imageSizes = getAttribute(img, "data-sizes") || getAttribute(this.state.slideTrack, "data-sizes");
+      const imageToLoad = new Image();
+      imageToLoad.onload = () => {
+        if (imageSrcSet) {
+          setAttribute(img, "srcset", imageSrcSet);
+        }
+        if (imageSizes) {
+          setAttribute(img, "sizes", imageSizes);
+        }
+        setAttribute(img, "src", imageSource);
+        removeAttribute(img, "data-lazy");
+        removeAttribute(img, "data-srcset");
+        removeAttribute(img, "data-sizes");
+        removeClass(img, "slick-loading");
+        if (this.options.adaptiveHeight === true) {
+          this.setPosition();
+        }
+        this.emit("lazyLoaded", { image: img, imageSource });
+        this.progressiveLazyLoad(1);
+      };
+      imageToLoad.onerror = () => {
+        if (tryCount < 3) {
+          setTimeout(() => {
+            this.progressiveLazyLoad(tryCount + 1);
+          }, 500);
+        } else {
+          removeAttribute(img, "data-lazy");
+          removeClass(img, "slick-loading");
+          addClass(img, "slick-lazyload-error");
+          this.emit("lazyLoadError", { image: img, imageSource });
+          this.progressiveLazyLoad(1);
+        }
+      };
+      imageToLoad.src = imageSource;
     }
     /**
      * On event - register listener

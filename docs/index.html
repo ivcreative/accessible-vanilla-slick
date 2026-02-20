@@ -905,7 +905,7 @@ JS
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.21.0/prism.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.2/slick/dist/slick.min.js"></script>
+  <script src="../slick/dist/slick.min.js"></script>
 
   <script>
     // Wait a tiny bit to ensure slick.min.js is fully loaded
@@ -1106,9 +1106,8 @@ JS
         speed: 500
       }
     );
-    // COMMENTED OUT: Let the slider's built-in lazy loading handle image loading
-    // If images don't load, uncomment this line to preload all images at initialization:
-    // applyInlineLazyImages(document.querySelector('.lazy'));
+    // Lazy loading is now handled by SlickSlider's built-in lazyLoad() method
+    // which automatically loads images via data-lazy attributes
 
     // Autoplay
     const slider9 = initSlider(
