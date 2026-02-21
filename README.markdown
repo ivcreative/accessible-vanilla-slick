@@ -39,17 +39,17 @@ Just add a link to the CSS file in your `<head>`:
 
 ```html
 <!-- Add the core slick.min.css -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.2/slick/dist/slick.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/slick.min.css">
 
 <!-- Add ONE of the theme files (accessible version or original) -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.2/slick/dist/accessible-slick-theme.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.2/slick/dist/slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/accessible-slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/slick-theme.min.css">
 ```
 
 Then, before your closing `<body>` tag add:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.2/slick/dist/slick.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/slick.min.js"></script>
 ```
 
 #### Package Managers
