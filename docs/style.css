@@ -78,7 +78,7 @@ p {
   Buttons
 ****************/
 .button {
-  background: var(--alternative-color--dark);
+  background: #1a2d45;
   color: #fff;
   display: block;
   font-size: 16px;
@@ -87,7 +87,7 @@ p {
   text-align: center;
   text-decoration: none;
   width: 48%;
-  border: 1px solid var(--alternative-color--light);
+  border: 2px solid #5a7fa3;
 }
 
   .button:hover,
@@ -910,15 +910,15 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Page buttons */
 .button, button {
-  background: var(--button-bg) !important;
+  background: #1a2d45 !important;
   color: white !important;
-  border: none !important;
+  border: 2px solid #5a7fa3 !important;
   transition: background 0.3s ease;
 }
 
 .button:hover, button:hover,
 .button:focus, button:focus {
-  background: var(--button-hover) !important;
+  background: #2a3d5f !important;
   color: white !important;
 }
 
