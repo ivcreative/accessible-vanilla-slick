@@ -13,6 +13,24 @@ https://ivcreative.github.io/accessible-vanilla-slick/
 
 Also check out this [collection of ready-to-use demos on CodePen](https://codepen.io/collection/nwRGZk) for common scenarios like hero banners, scrolling product cards, PDP thumbnail images, and more!
 
+## What's new in v1.2.0
+
+- Motion sensitivity support with `respectReducedMotion`.
+- Full keyboard navigation (Arrow Left/Right, Home, End).
+- Aria-live announcements with per-slide `data-announce` and optional descriptions.
+- Skip link support for keyboard users.
+- Lazy load improvements: RAF fades, loading/error indicators, progressive parallel loading, and IntersectionObserver support.
+- Responsive + layout optimizations with ResizeObserver and CSS variable positioning.
+- Optional `performance.mark()`/`performance.measure()` metrics for `init`, `changeSlide`, and `setPosition`.
+
+## Changelog
+
+### v1.2.0
+
+- Accessibility: aria-live announcements with `data-announce`/`data-announce-description`, skip links, improved keyboard navigation, and fade focus management.
+- Performance: ResizeObserver support, IntersectionObserver lazy loading, parallel progressive loading, RAF image fades, and CSS variable positioning.
+- UX: autoplay toggle label updates, `aria-current` on dots, and loading/error indicators for lazy images.
+
 #### CDN
 
 ##### Example using jsDelivr
@@ -21,17 +39,17 @@ Just add a link to the CSS file in your `<head>`:
 
 ```html
 <!-- Add the core slick.min.css -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick.min.css">
 
 <!-- Add ONE of the theme files (accessible version or original) -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/accessible-slick-theme.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/accessible-slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick-theme.min.css">
 ```
 
 Then, before your closing `<body>` tag add:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.0.1/slick/dist/slick.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick.min.js"></script>
 ```
 
 #### Package Managers
@@ -80,6 +98,10 @@ This package implements the following changes, all of which have been thoroughly
     <tr valign="top">
       <th scope="row" align="left"><a href="https://github.com/Accessible360/accessible-slick/issues/18">Instructions can now be provided</a> for screen reader users</th>
       <td>If your slider uses complex logic or unconventional interaction behaviors, there is a good chance that screen reader users will have an especially hard time figuring it out. If you're using the <code>asNavFor</code> setting or any of the API methods/events, you should probably explain how your carousel works to screen reader users.</td>
+    </tr>
+    <tr valign="top">
+      <th scope="row" align="left">🆕 <strong>Respects <code>prefers-reduced-motion</code></strong> to support users with motion sensitivity.</th>
+      <td>With the new <code>respectReducedMotion</code> setting, the slider automatically detects and honors the user's "Reduce Motion" operating system preference. This is essential for users with vestibular disorders, epilepsy, and other conditions that make motion uncomfortable or dangerous. When enabled, animations and transitions are disabled automatically. Complies with <a href="https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html">WCAG 2.2.2 (Animation from Interactions)</a>.</td>
     </tr>
     <tr valign="top">
       <th scope="row" align="left">The <a href="https://github.com/Accessible360/accessible-slick/issues/20">Previous and Next arrows can now be placed</a> before, after, or on either side of the slides in the DOM to match the visual design.</th>
@@ -141,12 +163,76 @@ In addition the original functionality, the following new settings have been add
 Setting | Type | Default | Description
 :-------|:-----|:--------|:-----------
 arrowsPlacement | string ('beforeSlides' \| 'afterSlides' \| 'split') | null | Determines where the previous and next arrows are placed in the slider DOM, which determines their tabbing order. Arrows can be placed together before the slides or after the slides, or split so that the previous arrow is before the slides and the next arrow is after (this is the default). Use this setting to ensure the tabbing order is logical based on your visual design to fulfill [WCAG 1.3.2](https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence.html) and [2.4.3](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html).
+announceSlides | boolean | true | Enables screen-reader announcements when the current slide changes.
+announceSlidePosition | boolean | true | When enabled, announces slide position (e.g. `Slide 2 of 6`). If all other announcement data is missing, position is used as the fallback.
+announceSlideDescription | boolean | false | When enabled, appends per-slide description text from `data-announce-description` to announcements.
+announcementPrefix | string | 'Slide' | Prefix used in automatic announcements, e.g. `Slide 2 of 6`.
 instructionsText | string | `null` | Instructions for screen reader users placed at the very beginning of the slider markup. **If you are using `asNavFor` or adding custom functionality with API methods/events, you probably need to supply instructions!**
+lazyLoadErrorMessage | string | 'Image failed to load' | Text shown when a lazy-loaded image fails to load.
+lazyLoadErrorVisible | boolean | true | When true, shows a visible error message near the failed image.
+lazyLoadErrorAnnounce | boolean | true | When true, announces the lazy-load error via the aria-live region.
+lazyLoadLoadingIndicator | boolean | false | When true, shows a visible loading message while images are loading.
+lazyLoadLoadingText | string | 'Loading image' | Text shown while a lazy-loaded image is loading.
+lazyLoadParallelLimit | number | 3 | Maximum number of images to load in parallel for `lazyLoad: 'progressive'`. Set to 1 to keep sequential loading.
+lazyLoadUseIntersectionObserver | boolean | true | When true, uses IntersectionObserver for `lazyLoad: 'ondemand'` if available.
+lazyLoadIntersectionRootMargin | string | '200px 0px' | Root margin for IntersectionObserver preloading.
+lazyLoadIntersectionThreshold | number | 0.01 | IntersectionObserver threshold for lazy-loaded images.
+enablePerformanceMetrics | boolean | false | When true, emits `performance.mark()` and `performance.measure()` entries for `init`, `changeSlide`, and `setPosition`.
+performanceMetricsPrefix | string | 'slick' | Prefix used for performance entries (e.g. `slick:slider-id:setPosition:0`).
 pauseIcon | string (html \| jQuery selector) \| object (DOM node \| jQuery object) | `<span class="slick-pause-icon" aria-hidden="true"></span>` | Custom element to use as the "pause" icon inside the autoplay pause/play toggle button, when `autoplay` is enabled.
 playIcon | string (html \| jQuery selector) \| object (DOM node \| jQuery object) | `<span class="slick-play-icon" aria-hidden="true"></span>` | Custom element to use as the "play" icon inside the autoplay pause/play toggle button, when `autoplay` is enabled.
 regionLabel | string | 'carousel' | Text to use for the `aria-label` that is placed on the wrapper.
+useSkipLink | boolean | true | Adds a skip link before the carousel so keyboard users can bypass it quickly.
+skipLinkText | string | 'Skip carousel' | Text for the skip link (e.g. `Skip featured carousel`).
+skipLinkVisible | boolean | false | When true, the skip link is always visible; otherwise it is visually hidden until focused.
 useGroupRole | boolean | true | Controls whether `role="group"` and an `aria-label` are applied to each slide.
 useAutoplayToggleButton | boolean | true | Controls whether a pause/play icon button is added when autoplay is enabled. Setting this to `false` without providing an alternative control would likely violate [WCAG 2.2.2](https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide.html), so be careful!
+
+### Per-slide announcements (`data-announce`) 🔊
+
+For dynamic environments like WordPress, add `data-announce` to each slide wrapper to control what gets read by screen readers:
+
+```html
+<div class="slide" data-announce="New arrivals: Summer collection">
+  ...
+</div>
+```
+
+Automatic message format:
+
+```text
+Slide X of Y: [data-announce value]
+```
+
+You can also customize the prefix per-slide with `data-announce-prefix` (for example `Showing`), or globally with the `announcementPrefix` setting.
+
+If you only want the description or custom text and no slide position, set `announceSlidePosition: false`.
+
+If you also want to announce extra details per slide, add `data-announce-description` and enable `announceSlideDescription: true`:
+
+```html
+<div
+  class="slide"
+  data-announce="Summer collection"
+  data-announce-description="20 items, free shipping, limited edition"
+>
+  ...
+</div>
+```
+
+```javascript
+const slider = new slickModule.SlickSlider(document.querySelector('.slider'), {
+  announceSlides: true,
+  announceSlideDescription: true
+});
+```
+
+Programmatic API is also available for dynamic updates:
+
+```javascript
+slider.announce('A new slide was added', true);
+slider.announceCurrentSlide(true);
+```
 
 
 ### Deprecated settings ❌

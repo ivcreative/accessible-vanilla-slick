@@ -5,8 +5,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎠</text></svg>?v=2" type="image/svg+xml">
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.1.0/slick/dist/slick.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.1.0/slick/dist/accessible-slick-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/accessible-slick-theme.min.css">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="a11y-dark.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -52,6 +52,9 @@
       <nav>
         <ul class="nav">
           <li>
+            <a href="#whats-new-v120">what's new</a>
+          </li>
+          <li>
             <a href="#demos">demos</a>
           </li>
           <li>
@@ -74,6 +77,9 @@
 
       <nav>
         <ul class="nav">
+          <li>
+            <a href="#whats-new-v120">what's new</a>
+          </li>
           <li>
             <a href="#demos">demos</a>
           </li>
@@ -110,8 +116,12 @@
           <li>Each slide has <code>role="group"</code> with a numbered <code>aria-label</code>.</li>
           <li>Autoplay now automatically comes with a pause/play toggle button.</li>
           <li>No more tab markup! Just simple, semantic elements like lists and buttons.</li>
+          <li>Each carousel now includes a skip link so keyboard users can bypass it quickly.</li>
           <li>The <code>accessibility</code> setting has been deprecated since this package is accessible by default!</li>
-          <li>Keyboard navigation has been removed so that screen reader users don't have to fight their virtual cursor!</li>
+          <li>Keyboard navigation now supports <code>Arrow Left/Right</code>, <code>Home</code>, and <code>End</code> for slide control.</li>
+          <li>Slide changes are now announced to screen readers with an aria-live region, with optional per-slide <code>data-announce</code> text.</li>
+          <li>Motion sensitivity is supported with <code>respectReducedMotion: true</code> (honors OS <code>prefers-reduced-motion</code>).</li>
+          <li>Recent internal performance updates reduce layout reflows in <code>setFade()</code> and <code>setPosition()</code>.</li>
           <li>The Previous and Next buttons now use clean, semantic markup. Say goodbye to those <code>aria-label</code>s!</li>
           <li>Screen-reader-only instructions can now be added to explain complex behaviors to screen reader users.</li>
           <li>A new, more accessible theme is now available (<code>accessible-slick-theme.min.css</code>), which comes with bigger icons and better, browser-default focus indicators! It's used by all the demos below.</li>
@@ -119,6 +129,18 @@
         </ul>
 
         <p><a href="https://github.com/ivcreative/accessible-vanilla-slick#what-makes-this-accessible">Read more about all of these features here!</a></p>
+
+        <h3 id="whats-new-v120" tabindex="-1">What’s New in v1.2.0</h3>
+        <ul class="features-list">
+          <li><strong>Motion sensitivity support:</strong> new <code>respectReducedMotion: true</code> option honors OS <code>prefers-reduced-motion</code>.</li>
+          <li><strong>Keyboard navigation:</strong> <code>Arrow Left/Right</code>, <code>Home</code>, and <code>End</code> are now supported for slide control.</li>
+          <li><strong>Screen reader announcements:</strong> aria-live slide updates with optional per-slide <code>data-announce</code>, <code>data-announce-prefix</code>, and <code>data-announce-description</code>.</li>
+          <li><strong>Skip link support:</strong> a built-in skip link lets keyboard users jump past the carousel.</li>
+          <li><strong>Dots and focus improvements:</strong> current dots use <code>aria-current</code> and fade mode prevents hidden slides from receiving focus.</li>
+          <li><strong>Lazy loading upgrades:</strong> requestAnimationFrame fade, visible loading/error states, progressive parallel loading, and IntersectionObserver support.</li>
+          <li><strong>Responsive + layout:</strong> ResizeObserver support and CSS variable positioning for smoother reflows.</li>
+          <li><strong>Performance tools:</strong> optional <code>performance.mark()</code>/<code>performance.measure()</code> metrics for <code>init</code>, <code>changeSlide</code>, and <code>setPosition</code>.</li>
+        </ul>
 
           <hr aria-hidden="true">
 
@@ -469,6 +491,7 @@ const slider = new slickModule.SlickSlider(
 );</code></pre>
 
         <p>In accessible-slick, a pause/play icon button is <em>automatically added</em> when <code>autoplay</code> is enabled in order to comply with <a href="https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide.html" target="_blank">WCAG 2.2.2</a>.</p>
+        <p>The button label now updates based on state ("Play autoplay" / "Pause autoplay") so screen readers always get the correct context.</p>
 
         <div class="accessibility-tip">
           <div class="icon">
@@ -518,6 +541,53 @@ const slider = new slickModule.SlickSlider(
           <div class="content">
             <h4 class="heading">TIP: don't forget those image descriptions!</h4>
             <p>If your slides contain nothing but images, those images almost certainly need <code>alt</code> descriptions in order to fulfill <a href="https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html" target="_blank">WCAG 1.1.1</a>.</p>
+          </div>
+        </div>
+
+          <hr aria-hidden="true">
+
+        <h3 id="respect-reduced-motion" tabindex="-1">Respecting Motion Preferences 🆕</h3>
+
+        <p>Support users with motion sensitivity by enabling the <code>respectReducedMotion</code> setting. When enabled, the slider will automatically detect and respect the user's "Reduce Motion" OS preference.</p>
+
+        <div class="slider motion-preference">
+          <div><p>1</p></div>
+          <div><p>2</p></div>
+          <div><p>3</p></div>
+          <div><p>4</p></div>
+          <div><p>5</p></div>
+          <div><p>6</p></div>
+        </div>
+
+        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
+  document.querySelector('.motion-preference'),
+  {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    respectReducedMotion: true  // 🆕 Respects prefers-reduced-motion
+  }
+);</code></pre>
+
+        <div class="accessibility-tip">
+          <div class="icon">
+            <span class="fa fa-universal-access" aria-hidden="true"></span>
+          </div>
+
+          <div class="content">
+            <h4 class="heading">✨ NEW: Motion Sensitivity Support</h4>
+            <p>When <code>respectReducedMotion: true</code> is set, the slider will automatically disable animations when a user has enabled "Reduce Motion" in their operating system. This is essential for users with vestibular disorders, epilepsy, and other conditions that make motion uncomfortable or dangerous.</p>
+            <p><strong>Test it yourself:</strong> Enable "Reduce Motion" in your OS settings and reload this page to see animations get disabled automatically!</p>
+            <ul>
+              <li><strong>macOS:</strong> System Settings → Accessibility → Display → Reduce motion</li>
+              <li><strong>Windows:</strong> Settings → Ease of Access → Display → Show animations</li>
+              <li><strong>iOS/iPadOS:</strong> Settings → Accessibility → Motion → Reduce Motion</li>
+              <li><strong>Android:</strong> Settings → Accessibility → Display → Remove animations</li>
+            </ul>
           </div>
         </div>
 
@@ -824,6 +894,72 @@ const sliderNav = new slickModule.SlickSlider(
               <td>Instructions for screen reader users placed at the very beginning of the slider markup. <b>If you are using <code>asNavFor</code> or adding custom functionality with API methods/events, you probably need to supply instructions!</b></td>
             </tr>
             <tr>
+              <th scope="row">lazyLoadErrorMessage</th>
+              <td><b aria-hidden="true">Type:</b> string</td>
+              <td><b aria-hidden="true">Default:</b> 'Image failed to load'</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Text shown when a lazy-loaded image fails to load.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadErrorVisible</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> true</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When true, shows a visible error message near the failed image.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadErrorAnnounce</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> true</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When true, announces the lazy-load error via the aria-live region.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadLoadingIndicator</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> false</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When true, shows a visible loading message while images are loading.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadLoadingText</th>
+              <td><b aria-hidden="true">Type:</b> string</td>
+              <td><b aria-hidden="true">Default:</b> 'Loading image'</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Text shown while a lazy-loaded image is loading.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadParallelLimit</th>
+              <td><b aria-hidden="true">Type:</b> number</td>
+              <td><b aria-hidden="true">Default:</b> 3</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Maximum number of images to load in parallel for <code>lazyLoad: 'progressive'</code>. Set to 1 to keep sequential loading.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadUseIntersectionObserver</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> true</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When true, uses IntersectionObserver for <code>lazyLoad: 'ondemand'</code> if available.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadIntersectionRootMargin</th>
+              <td><b aria-hidden="true">Type:</b> string</td>
+              <td><b aria-hidden="true">Default:</b> '200px 0px'</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Root margin for IntersectionObserver preloading.</td>
+            </tr>
+            <tr>
+              <th scope="row">lazyLoadIntersectionThreshold</th>
+              <td><b aria-hidden="true">Type:</b> number</td>
+              <td><b aria-hidden="true">Default:</b> 0.01</td>
+              <td>🆕 <strong>v1.2.0+</strong> — IntersectionObserver threshold for lazy-loaded images.</td>
+            </tr>
+            <tr>
+              <th scope="row">enablePerformanceMetrics</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> false</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When true, emits <code>performance.mark()</code> and <code>performance.measure()</code> entries for <code>init</code>, <code>changeSlide</code>, and <code>setPosition</code>.</td>
+            </tr>
+            <tr>
+              <th scope="row">performanceMetricsPrefix</th>
+              <td><b aria-hidden="true">Type:</b> string</td>
+              <td><b aria-hidden="true">Default:</b> 'slick'</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Prefix used for performance entries (e.g. <code>slick:slider-id:setPosition:0</code>).</td>
+            </tr>
+            <tr>
               <th scope="row">pauseIcon</th>
               <td><b aria-hidden="true">Type:</b> string (html | jQuery selector) | object (DOM node | jQuery object)</td>
               <td><b aria-hidden="true">Default:</b> <code>&lt;span class="slick-pause-icon" aria-hidden="true"&gt;&lt;/span&gt;</code></td>
@@ -842,6 +978,48 @@ const sliderNav = new slickModule.SlickSlider(
               <td>Text to use for the <code>aria-label</code> that is placed on the wrapper.</td>
             </tr>
             <tr>
+              <th scope="row">useSkipLink</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> true</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Adds a skip link before the carousel so keyboard users can bypass it quickly.</td>
+            </tr>
+            <tr>
+              <th scope="row">skipLinkText</th>
+              <td><b aria-hidden="true">Type:</b> string</td>
+              <td><b aria-hidden="true">Default:</b> 'Skip carousel'</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Text for the skip link (e.g. <code>Skip featured carousel</code>).</td>
+            </tr>
+            <tr>
+              <th scope="row">skipLinkVisible</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> false</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When true, the skip link is always visible; otherwise it is visually hidden until focused.</td>
+            </tr>
+            <tr>
+              <th scope="row">announceSlides</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> true</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Enables aria-live announcements when slides change. Use <code>data-announce</code> on each slide to provide custom screen-reader text.</td>
+            </tr>
+            <tr>
+              <th scope="row">announceSlidePosition</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> true</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Announces slide position (e.g. <code>Slide 2 of 6</code>). If no other announcement data is available, position is used as the fallback.</td>
+            </tr>
+            <tr>
+              <th scope="row">announceSlideDescription</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> false</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When enabled, appends optional per-slide description text from <code>data-announce-description</code> to aria-live announcements.</td>
+            </tr>
+            <tr>
+              <th scope="row">announcementPrefix</th>
+              <td><b aria-hidden="true">Type:</b> string</td>
+              <td><b aria-hidden="true">Default:</b> 'Slide'</td>
+              <td>🆕 <strong>v1.2.0+</strong> — Prefix used in auto announcements, e.g. <code>Slide 2 of 6</code>. Can be overridden per slide with <code>data-announce-prefix</code>.</td>
+            </tr>
+            <tr>
               <th scope="row">useAutoplayToggleButton</th>
               <td><b aria-hidden="true">Type:</b> boolean</td>
               <td><b aria-hidden="true">Default:</b> true</td>
@@ -853,8 +1031,40 @@ const sliderNav = new slickModule.SlickSlider(
               <td><b aria-hidden="true">Default:</b> true</td>
               <td>Controls whether <code>role="group"</code> and an <code>aria-label</code> are applied to each slide.</td>
             </tr>
+            <tr>
+              <th scope="row">respectReducedMotion</th>
+              <td><b aria-hidden="true">Type:</b> boolean</td>
+              <td><b aria-hidden="true">Default:</b> false</td>
+              <td>🆕 <strong>v1.2.0+</strong> — When set to <code>true</code>, the slider will respect the user's <code>prefers-reduced-motion</code> operating system preference and disable animations/transitions. This ensures compliance with <a href="https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html" target="_blank">WCAG 2.2.2 (Animation from Interactions)</a>. Defaults to <code>false</code> for backward compatibility; enable this to support users with vestibular disorders or other motion sensitivities.</td>
+            </tr>
           </tbody>
         </table>
+
+        <div class="accessibility-tip">
+          <div class="icon">
+            <span class="fa fa-universal-access" aria-hidden="true"></span>
+          </div>
+
+          <div class="content">
+            <h3 class="heading">🆕 New in v1.2.0: aria-live slide announcements</h3>
+            <p>Add <code>data-announce</code> to slide wrappers to provide custom spoken text for screen readers, especially useful for dynamic CMS content like WordPress:</p>
+            <pre><code>&lt;div class="slide" data-announce="Featured article: Accessibility audit"&gt;...&lt;/div&gt;</code></pre>
+            <p>By default, announcements follow: <code>Slide X of Y: [data-announce]</code>. You can customize the prefix globally with <code>announcementPrefix</code> or per slide with <code>data-announce-prefix</code>.</p>
+            <p>Optional: add <code>data-announce-description</code> and enable <code>announceSlideDescription: true</code> to append extra slide details in the announcement.</p>
+            <p>To announce only your custom text and suppress slide position, set <code>announceSlidePosition: false</code>.</p>
+          </div>
+        </div>
+
+        <div class="accessibility-tip">
+          <div class="icon">
+            <span class="fa fa-universal-access" aria-hidden="true"></span>
+          </div>
+
+          <div class="content">
+            <h3 class="heading">✨ NEW in v1.2.0: Motion Sensitivity Support</h3>
+            <p>Accessible Vanilla Slick now supports users who prefer reduced motion! Set <code>respectReducedMotion: true</code> in your configuration to automatically disable animations when a user has enabled "Reduce Motion" in their operating system settings (macOS accessibility preferences, Windows ease of access, etc.). This is an important accessibility improvement that benefits users with vestibular disorders, epilepsy, and other conditions that make motion uncomfortable or dangerous.</p>
+          </div>
+        </div>
 
         <div class="accessibility-tip">
           <div class="icon">
@@ -882,7 +1092,7 @@ const sliderNav = new slickModule.SlickSlider(
       <div class="content">
         <h2 id="go-get-it" tabindex="-1">Go Get It</h2>
 
-        <a class="button first" href="https://github.com/ivcreative/accessible-vanilla-slick/archive/v1.1.0.zip">Download Now</a>
+        <a class="button first" href="https://github.com/ivcreative/accessible-vanilla-slick/archive/v1.2.0.zip">Download Now</a>
         <a class="button last" href="https://github.com/ivcreative/accessible-vanilla-slick">View On Github</a>
 
           <hr aria-hidden="true">
@@ -890,22 +1100,22 @@ const sliderNav = new slickModule.SlickSlider(
         <p>You can also use accessible-slick with the jsDelivr CDN!</p>
 
         <pre><code class="language-markup">CSS
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.1.0/slick/dist/slick.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick.min.css&quot;&gt;
 
 Theme CSS option #1 (original)
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.1.0/slick/dist/slick-theme.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick-theme.min.css&quot;&gt;
 
 Theme CSS option #2 (accessible)
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.1.0/slick/dist/accessible-slick-theme.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/accessible-slick-theme.min.css&quot;&gt;
 
 JS
-&lt;script type=&quot;text/javascript&quot; src=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.1.0/slick/dist/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
       </div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.21.0/prism.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.1.0/slick/dist/slick.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.0/slick/dist/slick.min.js"></script>
 
   <script>
     // Wait a tiny bit to ensure slick.min.js is fully loaded
@@ -1139,6 +1349,20 @@ JS
       );
     });
 
+    // Respect Reduced Motion Preference 🆕
+    const motionPreferenceSlider = initSlider(
+      '.motion-preference',
+      {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        respectReducedMotion: true  // 🆕 Respects prefers-reduced-motion
+      }
+    );
 
     // Add & Remove
     const addRemoveSlider = initSlider(

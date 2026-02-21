@@ -127,6 +127,17 @@ export class SlickSlider {
     initialSlide: 0,
     instructionsText: null,
     lazyLoad: 'ondemand', // 'ondemand', 'progressive', or false
+    lazyLoadErrorMessage: 'Image failed to load',
+    lazyLoadErrorVisible: true,
+    lazyLoadErrorAnnounce: true,
+    lazyLoadLoadingIndicator: false,
+    lazyLoadLoadingText: 'Loading image',
+    lazyLoadParallelLimit: 3,
+    lazyLoadUseIntersectionObserver: true,
+    lazyLoadIntersectionRootMargin: '200px 0px',
+    lazyLoadIntersectionThreshold: 0.01,
+    enablePerformanceMetrics: false,
+    performanceMetricsPrefix: 'slick',
     mobileFirst: false,
     nextArrow: '<button class="slick-next" aria-label="Next slide"><span class="slick-next-icon" aria-hidden="true"></span></button>',
     pauseIcon: '<span class="slick-pause-icon" aria-hidden="true"></span>',
@@ -158,7 +169,16 @@ export class SlickSlider {
     zIndex: 1000,
     
     // Accessibility
-    regionLabel: 'slider'
+    regionLabel: 'slider',
+    respectReducedMotion: false,
+    announceSlides: true,
+    announceSlidePosition: true,
+    announceSlideDescription: false,
+    announcementLive: 'polite',
+    announcementPrefix: 'Slide',
+    useSkipLink: true,
+    skipLinkText: 'Skip carousel',
+    skipLinkVisible: false
   };
 
   /**
@@ -168,6 +188,10 @@ export class SlickSlider {
     activeBreakpoint: null,
     animating: false,
     autoPlayTimer: null,
+    announcementElement: null,
+    announcementTimer: null,
+    skipLinkElement: null,
+    skipLinkTarget: null,
     currentDirection: 0,
     currentLeft: 0,
     currentSlide: 0,
@@ -177,6 +201,7 @@ export class SlickSlider {
     dots: null,
     dragging: false,
     edgeHit: false,
+    cssVarsSupported: false,
     slidesCache: null,
     gestureEndTime: 0,
     gestureStartTime: 0,
@@ -185,6 +210,11 @@ export class SlickSlider {
     listHeight: 0,
     listWidth: 0,
     loadIndex: 0,
+    lastAnnouncement: '',
+    lazyLoadInFlight: 0,
+    lazyLoadObserver: null,
+    lazyLoadQueue: null,
+    performanceMarkId: 0,
     nextArrowElement: null,
     pauseButton: null,
     postSlideDelay: 0,
@@ -198,6 +228,7 @@ export class SlickSlider {
     slides: [],
     sliding: false,
     slideList: null,
+    resizeObserver: null,
     swipeLeft: 0,
     swiping: false,
     suppressNavSync: false,
@@ -232,12 +263,14 @@ export class SlickSlider {
    * Initialize slider
    */
   init() {
+    const perf = this.startPerformance('init');
     // Mark element as slider
     this.element.setAttribute('data-slick-slider', this.instanceId);
     addClass(this.element, 'slick-slider');
     
     // Check CSS support
     this.state.transformsEnabled = supportsTransforms();
+    this.state.cssVarsSupported = this.supportsCSSVariables();
     
     // Setup props
     this.setProps();
@@ -254,6 +287,12 @@ export class SlickSlider {
     
     // Build UI elements
     this.buildOut();
+
+    // Build screen-reader announcement region
+    this.buildAnnouncement();
+
+    // Build skip link for keyboard users
+    this.buildSkipLink();
     
     // Setup infinite mode - MUST be called after buildOut() which puts slides in track
     this.setupInfinite();
@@ -311,18 +350,25 @@ export class SlickSlider {
     
     // Initialize lazy loading if enabled
     if (this.options.lazyLoad) {
+      const useObserver =
+        this.options.lazyLoadUseIntersectionObserver &&
+        this.options.lazyLoad === 'ondemand' &&
+        this.initLazyLoadObserver();
+
       // For progressive mode, start loading immediately
       if (this.options.lazyLoad === 'progressive') {
         this.progressiveLazyLoad();
-      } else {
+      } else if (!useObserver) {
         // For ondemand/anticipated modes, trigger lazyLoad to load visible slides
         this.lazyLoad();
       }
-      
+
       // Load images when slides change
       this.dispatcher.addEventListener('afterChange', () => {
         if (this.options.lazyLoad === 'progressive') {
           this.progressiveLazyLoad();
+        } else if (useObserver) {
+          this.observeLazyImages();
         } else {
           this.lazyLoad();
         }
@@ -330,6 +376,7 @@ export class SlickSlider {
     }
     
     this.emit('init', { instance: this });
+    this.endPerformance(perf);
   }
 
   /**
@@ -513,6 +560,175 @@ export class SlickSlider {
   }
 
   /**
+   * Build aria-live announcement region
+   */
+  buildAnnouncement() {
+    if (!this.options.accessibility || !this.options.announceSlides) return;
+    if (this.state.announcementElement) return;
+
+    const announcement = document.createElement('div');
+    addClass(announcement, 'slick-sr-only');
+    setAttribute(announcement, 'aria-live', this.options.announcementLive || 'polite');
+    setAttribute(announcement, 'aria-atomic', 'true');
+    setAttribute(announcement, 'role', 'status');
+    setAttribute(announcement, 'data-slick-announcement', 'true');
+
+    this.state.announcementElement = announcement;
+    appendChild(this.element, announcement);
+  }
+
+  /**
+   * Build skip link for keyboard users
+   */
+  buildSkipLink() {
+    if (!this.options.accessibility || !this.options.useSkipLink) return;
+    if (this.state.skipLinkElement || this.state.skipLinkTarget) return;
+    if (!this.element || !this.element.parentNode) return;
+
+    const parent = this.element.parentNode;
+    const skipId = `slick-skip-${this.instanceId}`;
+
+    const skipLink = document.createElement('a');
+    addClass(skipLink, 'slick-skip-link');
+    if (this.options.skipLinkVisible) {
+      addClass(skipLink, 'slick-skip-link--visible');
+    }
+    setAttribute(skipLink, 'href', `#${skipId}`);
+    setAttribute(skipLink, 'data-slick-skip-link', 'true');
+    skipLink.textContent = this.options.skipLinkText || 'Skip carousel';
+
+    const skipTarget = document.createElement('span');
+    addClass(skipTarget, 'slick-skip-target');
+    setAttribute(skipTarget, 'id', skipId);
+    setAttribute(skipTarget, 'tabindex', '-1');
+    setAttribute(skipTarget, 'data-slick-skip-target', 'true');
+
+    insertBefore(this.element, skipLink);
+    if (this.element.nextSibling) {
+      parent.insertBefore(skipTarget, this.element.nextSibling);
+    } else {
+      appendChild(parent, skipTarget);
+    }
+
+    this.state.skipLinkElement = skipLink;
+    this.state.skipLinkTarget = skipTarget;
+  }
+
+  /**
+   * Public API: Announce a custom message in aria-live region
+   */
+  announce(message, force = false) {
+    if (!this.options.accessibility || !this.options.announceSlides) return;
+    if (!this.state.announcementElement) return;
+
+    const nextMessage = typeof message === 'string' ? message.trim() : '';
+    if (!nextMessage) return;
+    if (!force && nextMessage === this.state.lastAnnouncement) return;
+
+    this.state.lastAnnouncement = nextMessage;
+
+    if (this.state.announcementTimer) {
+      clearTimeout(this.state.announcementTimer);
+      this.state.announcementTimer = null;
+    }
+
+    // Clear first so SRs detect repeated updates reliably
+    this.state.announcementElement.textContent = '';
+    this.state.announcementTimer = window.setTimeout(() => {
+      if (this.state.announcementElement) {
+        this.state.announcementElement.textContent = nextMessage;
+      }
+    }, 30);
+  }
+
+  /**
+   * Resolve an announcement label from slide data attributes/content
+   */
+  getSlideAnnouncementLabel(slide) {
+    if (!slide) return '';
+
+    const explicitLabel = getAttribute(slide, 'data-announce') || getAttribute(slide, 'data-anounce');
+    if (explicitLabel && explicitLabel.trim()) {
+      return explicitLabel.trim();
+    }
+
+    const legacyLabel = getAttribute(slide, 'data-slide-title');
+    if (legacyLabel && legacyLabel.trim()) {
+      return legacyLabel.trim();
+    }
+
+    const imageWithAlt = slide.querySelector('img[alt]');
+    const imageAlt = imageWithAlt ? imageWithAlt.getAttribute('alt') : '';
+    if (imageAlt && imageAlt.trim()) {
+      return imageAlt.trim();
+    }
+
+    return '';
+  }
+
+  /**
+   * Resolve optional slide description for announcements
+   */
+  getSlideAnnouncementDescription(slide) {
+    if (!slide) return '';
+
+    const explicitDescription = getAttribute(slide, 'data-announce-description') || getAttribute(slide, 'data-anounce-description');
+    if (explicitDescription && explicitDescription.trim()) {
+      return explicitDescription.trim();
+    }
+
+    const legacyDescription = getAttribute(slide, 'data-slide-description');
+    if (legacyDescription && legacyDescription.trim()) {
+      return legacyDescription.trim();
+    }
+
+    return '';
+  }
+
+  /**
+   * Announce current slide position and optional label
+   */
+  announceCurrentSlide(force = false) {
+    if (!this.options.accessibility || !this.options.announceSlides) return;
+    if (this.state.slideCount < 1) return;
+
+    const normalizedIndex = this.normalizeSlideIndex(this.state.currentSlide);
+    const currentSlide = this.state.slides[normalizedIndex];
+    if (!currentSlide) return;
+
+    const perSlidePrefix = getAttribute(currentSlide, 'data-announce-prefix') || getAttribute(currentSlide, 'data-anounce-prefix');
+    const prefix = perSlidePrefix || this.options.announcementPrefix || 'Slide';
+    const label = this.getSlideAnnouncementLabel(currentSlide);
+    const description = this.options.announceSlideDescription
+      ? this.getSlideAnnouncementDescription(currentSlide)
+      : '';
+    const shouldAnnouncePosition = this.options.announceSlidePosition !== false;
+
+    const messageParts = [];
+    if (shouldAnnouncePosition) {
+      messageParts.push(`${prefix} ${normalizedIndex + 1} of ${this.state.slideCount}`);
+    }
+    if (label) {
+      messageParts.push(label);
+    }
+    if (description) {
+      messageParts.push(description);
+    }
+
+    if (messageParts.length === 0) {
+      messageParts.push(`${prefix} ${normalizedIndex + 1} of ${this.state.slideCount}`);
+    }
+
+    let message = messageParts[0];
+    if (messageParts.length > 1) {
+      const details = messageParts.slice(1).join('. ');
+      message += `: ${details}`;
+    }
+
+    this.announce(message, force);
+  }
+
+  /**
    * Build navigation arrows
    */
   buildArrows() {
@@ -592,10 +808,17 @@ export class SlickSlider {
     const dotIndex = Math.floor(this.state.currentSlide / this.options.slidesToScroll);
     const dots = Array.from(this.state.dots.children);
     dots.forEach((dot, index) => {
+      const button = dot.querySelector('button');
       if (index === dotIndex) {
         addClass(dot, 'slick-active');
+        if (button) {
+          setAttribute(button, 'aria-current', 'true');
+        }
       } else {
         removeClass(dot, 'slick-active');
+        if (button) {
+          removeAttribute(button, 'aria-current');
+        }
       }
     });
   }
@@ -624,6 +847,8 @@ export class SlickSlider {
    */
   setAutoplayButtonState(isPaused) {
     if (!this.state.pauseButton) return;
+    const label = isPaused ? 'Play autoplay' : 'Pause autoplay';
+    setAttribute(this.state.pauseButton, 'aria-label', label);
     setAttribute(this.state.pauseButton, 'aria-pressed', isPaused ? 'true' : 'false');
     empty(this.state.pauseButton);
     const iconMarkup = isPaused ? this.options.playIcon : this.options.pauseIcon;
@@ -640,7 +865,17 @@ export class SlickSlider {
   initializeEvents() {
     // Window resize
     this.boundMethods.handleResize = debounce(() => this.checkResponsive(), 250);
-    window.addEventListener('resize', this.boundMethods.handleResize);
+    if ('ResizeObserver' in window) {
+      this.state.resizeObserver = new ResizeObserver(() => {
+        this.boundMethods.handleResize();
+      });
+      this.state.resizeObserver.observe(this.element);
+      if (this.options.respondTo === 'window' || this.options.respondTo === 'min') {
+        window.addEventListener('resize', this.boundMethods.handleResize);
+      }
+    } else {
+      window.addEventListener('resize', this.boundMethods.handleResize);
+    }
     
     // Visibility change
     this.boundMethods.handleVisibilityChange = () => this.handleVisibilityChange();
@@ -1086,6 +1321,14 @@ export class SlickSlider {
     removeEventListener(window, 'resize', this.boundMethods.handleResize);
     removeEventListener(document, 'visibilitychange', this.boundMethods.handleVisibilityChange);
     removeEventListener(this.element, 'keydown', this.boundMethods.handleKeydown);
+    if (this.state.resizeObserver) {
+      this.state.resizeObserver.disconnect();
+      this.state.resizeObserver = null;
+    }
+    if (this.state.lazyLoadObserver) {
+      this.state.lazyLoadObserver.disconnect();
+      this.state.lazyLoadObserver = null;
+    }
     
     // Remove all custom events
     this.dispatcher.clear();
@@ -1095,6 +1338,22 @@ export class SlickSlider {
     if (this.state.prevArrowElement) remove(this.state.prevArrowElement);
     if (this.state.nextArrowElement) remove(this.state.nextArrowElement);
     if (this.state.dots) remove(this.state.dots);
+    if (this.state.announcementElement) {
+      remove(this.state.announcementElement);
+      this.state.announcementElement = null;
+    }
+    if (this.state.skipLinkElement) {
+      remove(this.state.skipLinkElement);
+      this.state.skipLinkElement = null;
+    }
+    if (this.state.skipLinkTarget) {
+      remove(this.state.skipLinkTarget);
+      this.state.skipLinkTarget = null;
+    }
+    if (this.state.announcementTimer) {
+      clearTimeout(this.state.announcementTimer);
+      this.state.announcementTimer = null;
+    }
     
     // Clear state
     this.state.unslicked = true;
@@ -1107,122 +1366,130 @@ export class SlickSlider {
    * Handle slide change
    */
   changeSlide(e, dontAnimate = false) {
-    const message = e?.data?.message;
-    const previousSlide = this.normalizeSlideIndex(this.state.currentSlide);
-    let targetSlide = previousSlide;
+    const perf = this.startPerformance('changeSlide');
+    try {
+      const message = e?.data?.message;
+      const previousSlide = this.normalizeSlideIndex(this.state.currentSlide);
+      let targetSlide = previousSlide;
 
-    if (message === 'next') {
-      targetSlide = previousSlide + this.options.slidesToScroll;
-    } else if (message === 'prev') {
-      targetSlide = previousSlide - this.options.slidesToScroll;
-    } else if (message === 'index' && Number.isInteger(e?.data?.index)) {
-      targetSlide = e.data.index;
-    }
-
-    if (this.options.fade) {
-      if (!this.options.infinite) {
-        targetSlide = Math.max(0, Math.min(targetSlide, this.state.slideCount - 1));
-      } else {
-        targetSlide = this.normalizeSlideIndex(targetSlide);
+      if (message === 'next') {
+        targetSlide = previousSlide + this.options.slidesToScroll;
+      } else if (message === 'prev') {
+        targetSlide = previousSlide - this.options.slidesToScroll;
+      } else if (message === 'index' && Number.isInteger(e?.data?.index)) {
+        targetSlide = e.data.index;
       }
+
+      if (this.options.fade) {
+        if (!this.options.infinite) {
+          targetSlide = Math.max(0, Math.min(targetSlide, this.state.slideCount - 1));
+        } else {
+          targetSlide = this.normalizeSlideIndex(targetSlide);
+        }
+
+        if (targetSlide === previousSlide) return;
+        if (this.state.animating && this.options.waitForAnimate) return;
+
+        this.emit('beforeChange', { previousSlide, nextSlide: targetSlide });
+
+        const shouldAnimate = this.options.useCSS && !dontAnimate && this.options.speed > 0;
+        this.state.currentSlide = targetSlide;
+
+        if (!this.state.suppressNavSync && this.options.asNavFor) {
+          this.syncAsNavFor(targetSlide, dontAnimate);
+        }
+
+        if (shouldAnimate) {
+          this.state.animating = true;
+          this.fadeSlideTransition(previousSlide, targetSlide, () => {
+            this.state.animating = false;
+            this.setPosition();
+            this.emit('afterChange', { currentSlide: this.state.currentSlide });
+            this.announceCurrentSlide();
+          });
+        } else {
+          this.state.animating = false;
+          this.setPosition();
+          this.emit('afterChange', { currentSlide: this.state.currentSlide });
+          this.announceCurrentSlide();
+        }
+
+        return;
+      }
+
+      // In infinite mode, allow going beyond boundaries (we'll use cloned slides)
+      // The wrapping happens visually through cloned slides, not through logical wrapping
+      if (!this.options.infinite) {
+        // Non-infinite: clamp to valid range
+        targetSlide = Math.max(0, Math.min(targetSlide, this.state.slideCount - 1));
+      }
+      // Infinite mode: we allow any slide index, positioning handles the cloned slides
 
       if (targetSlide === previousSlide) return;
       if (this.state.animating && this.options.waitForAnimate) return;
 
       this.emit('beforeChange', { previousSlide, nextSlide: targetSlide });
-
       const shouldAnimate = this.options.useCSS && !dontAnimate && this.options.speed > 0;
-      this.state.currentSlide = targetSlide;
-
-      if (!this.state.suppressNavSync && this.options.asNavFor) {
-        this.syncAsNavFor(targetSlide, dontAnimate);
-      }
-
+      this.state.animating = shouldAnimate;
       if (shouldAnimate) {
-        this.state.animating = true;
-        this.fadeSlideTransition(previousSlide, targetSlide, () => {
+        applyTransition(this.state.slideTrack, this.options.speed, this.options.cssEase);
+        this.animateHeight();
+      } else {
+        removeTransition(this.state.slideTrack);
+      }
+      
+      this.state.currentSlide = targetSlide;
+      const normalizedTarget = this.normalizeSlideIndex(targetSlide);
+      if (!this.state.suppressNavSync && this.options.asNavFor) {
+        this.syncAsNavFor(normalizedTarget, dontAnimate);
+      }
+      this.setPosition();
+      
+      if (shouldAnimate) {
+        window.setTimeout(() => {
+          // In infinite mode: after animation, check if we need to reposition back to equivalent real slide
+          if (this.options.infinite) {
+            let repositionSlide = targetSlide;
+            
+            // Wrap forward: if we've gone past the end, jump back to start
+            if (targetSlide >= this.state.slideCount) {
+              repositionSlide = targetSlide % this.state.slideCount;
+            }
+            // Wrap backward: if we've gone before the start, jump to end
+            else if (targetSlide < 0) {
+              repositionSlide = this.state.slideCount + (targetSlide % this.state.slideCount);
+            }
+            
+            // If we need to reposition, do it instantly without animation
+            if (repositionSlide !== targetSlide) {
+              // Remove transition immediately
+              removeTransition(this.state.slideTrack);
+              
+              // Update the current slide index
+              this.state.currentSlide = repositionSlide;
+              
+              // Reposition with full calculations to ensure everything is correct
+              // Use setPosition() for complete and accurate positioning
+              this.setPosition();
+            } else {
+              // If we didn't wrap, just remove the transition
+              removeTransition(this.state.slideTrack);
+            }
+          } else {
+            // Non-infinite mode: just remove transition
+            removeTransition(this.state.slideTrack);
+          }
+          
           this.state.animating = false;
-          this.setPosition();
-          this.emit('afterChange', { currentSlide: this.state.currentSlide });
-        });
+        }, this.options.speed);
       } else {
         this.state.animating = false;
-        this.setPosition();
-        this.emit('afterChange', { currentSlide: this.state.currentSlide });
       }
-
-      return;
+      this.emit('afterChange', { currentSlide: this.state.currentSlide });
+      this.announceCurrentSlide();
+    } finally {
+      this.endPerformance(perf);
     }
-
-    // In infinite mode, allow going beyond boundaries (we'll use cloned slides)
-    // The wrapping happens visually through cloned slides, not through logical wrapping
-    if (!this.options.infinite) {
-      // Non-infinite: clamp to valid range
-      targetSlide = Math.max(0, Math.min(targetSlide, this.state.slideCount - 1));
-    }
-    // Infinite mode: we allow any slide index, positioning handles the cloned slides
-
-    if (targetSlide === previousSlide) return;
-    if (this.state.animating && this.options.waitForAnimate) return;
-
-    this.emit('beforeChange', { previousSlide, nextSlide: targetSlide });
-    const shouldAnimate = this.options.useCSS && !dontAnimate && this.options.speed > 0;
-    this.state.animating = shouldAnimate;
-    if (shouldAnimate) {
-      applyTransition(this.state.slideTrack, this.options.speed, this.options.cssEase);
-      this.animateHeight();
-    } else {
-      removeTransition(this.state.slideTrack);
-    }
-    
-    this.state.currentSlide = targetSlide;
-    const normalizedTarget = this.normalizeSlideIndex(targetSlide);
-    if (!this.state.suppressNavSync && this.options.asNavFor) {
-      this.syncAsNavFor(normalizedTarget, dontAnimate);
-    }
-    this.setPosition();
-    
-    if (shouldAnimate) {
-      window.setTimeout(() => {
-        // In infinite mode: after animation, check if we need to reposition back to equivalent real slide
-        if (this.options.infinite) {
-          let repositionSlide = targetSlide;
-          
-          // Wrap forward: if we've gone past the end, jump back to start
-          if (targetSlide >= this.state.slideCount) {
-            repositionSlide = targetSlide % this.state.slideCount;
-          }
-          // Wrap backward: if we've gone before the start, jump to end
-          else if (targetSlide < 0) {
-            repositionSlide = this.state.slideCount + (targetSlide % this.state.slideCount);
-          }
-          
-          // If we need to reposition, do it instantly without animation
-          if (repositionSlide !== targetSlide) {
-            // Remove transition immediately
-            removeTransition(this.state.slideTrack);
-            
-            // Update the current slide index
-            this.state.currentSlide = repositionSlide;
-            
-            // Reposition with full calculations to ensure everything is correct
-            // Use setPosition() for complete and accurate positioning
-            this.setPosition();
-          } else {
-            // If we didn't wrap, just remove the transition
-            removeTransition(this.state.slideTrack);
-          }
-        } else {
-          // Non-infinite mode: just remove transition
-          removeTransition(this.state.slideTrack);
-        }
-        
-        this.state.animating = false;
-      }, this.options.speed);
-    } else {
-      this.state.animating = false;
-    }
-    this.emit('afterChange', { currentSlide: this.state.currentSlide });
   }
 
   /**
@@ -1380,21 +1647,35 @@ export class SlickSlider {
     }
 
     // Position all slides absolutely at the same location
+    // OPTIMIZATION: Batch style updates with cssText instead of individual setStyle() calls
+    // This reduces reflows from ~7 per slide to ~1 per slide (6x improvement)
+    const hiddenSlideCSS = `
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      opacity: 0;
+      z-index: ${this.options.zIndex - 2};
+      transition: none;
+    `;
+
     slides.forEach((slide, index) => {
-      setStyle(slide, 'position', 'absolute');
-      setStyle(slide, 'left', '0');
-      setStyle(slide, 'top', '0');
-      setStyle(slide, 'width', '100%');
-      setStyle(slide, 'opacity', '0');
-      setStyle(slide, 'z-index', String(this.options.zIndex - 2));
-      setStyle(slide, 'transition', '');
+      // Use cssText to batch multiple style assignments into one reflow
+      slide.style.cssText = hiddenSlideCSS;
     });
 
     // Show only the current slide
     const currentIndex = Math.max(0, Math.min(this.state.currentSlide, slides.length - 1));
     if (slides[currentIndex]) {
-      setStyle(slides[currentIndex], 'opacity', '1');
-      setStyle(slides[currentIndex], 'z-index', String(this.options.zIndex - 1));
+      slides[currentIndex].style.cssText = `
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        opacity: 1;
+        z-index: ${this.options.zIndex - 1};
+        transition: none;
+      `;
     }
   }
 
@@ -1403,6 +1684,8 @@ export class SlickSlider {
    */
   setPosition() {
     if (!this.state.slideList || !this.state.slideTrack) return;
+    const perf = this.startPerformance('setPosition');
+    const supportsCssVars = this.state.cssVarsSupported;
 
     // Apply centerPadding to list in center mode (like jQuery does)
     if (this.options.centerMode) {
@@ -1440,7 +1723,15 @@ export class SlickSlider {
     // FADE MODE: simpler positioning - just position slides and control with opacity
     if (this.options.fade) {
       this.state.slideWidth = listWidth;
-      setStyle(this.state.slideTrack, 'width', `${listWidth}px`);
+      if (supportsCssVars) {
+        setStyle(this.state.slideTrack, '--slick-track-width', `${listWidth}px`);
+        setStyle(this.state.slideTrack, '--slick-track-x', '0px');
+        setStyle(this.state.slideTrack, '--slick-track-y', '0px');
+        setStyle(this.state.slideTrack, '--slick-track-left', '0px');
+        setStyle(this.state.slideTrack, '--slick-track-top', '0px');
+      } else {
+        setStyle(this.state.slideTrack, 'width', `${listWidth}px`);
+      }
       setStyle(this.state.slideTrack, 'position', 'relative');
       setStyle(this.state.slideTrack, 'left', '0');
       setStyle(this.state.slideTrack, 'top', '0');
@@ -1451,6 +1742,7 @@ export class SlickSlider {
       this.updateArrows();
       this.updateNavigationVisibility();
       this.setHeight();
+      this.endPerformance(perf);
       return;
     }
     
@@ -1466,7 +1758,12 @@ export class SlickSlider {
       trackWidth = 5000 * totalSlideCount;
       
       // SET TRACK WIDTH FIRST - this allows offsetLeft to be calculated correctly
-      setStyle(this.state.slideTrack, 'width', `${trackWidth}px`);
+      if (supportsCssVars) {
+        setStyle(this.state.slideTrack, '--slick-track-width', `${trackWidth}px`);
+        setStyle(this.state.slideTrack, '--slick-slide-width', 'auto');
+      } else {
+        setStyle(this.state.slideTrack, 'width', `${trackWidth}px`);
+      }
       
       // For variable width, ensure all slides are visible (display: block)
       allSlidesInDOM.forEach(slide => {
@@ -1535,7 +1832,11 @@ export class SlickSlider {
       trackWidth = Math.ceil(this.state.slideWidth * totalSlideCount);
       
       // Set track width first (this gives proper context for offset calculation)
-      setStyle(this.state.slideTrack, 'width', `${trackWidth}px`);
+      if (supportsCssVars) {
+        setStyle(this.state.slideTrack, '--slick-track-width', `${trackWidth}px`);
+      } else {
+        setStyle(this.state.slideTrack, 'width', `${trackWidth}px`);
+      }
       
       // Calculate the offset from the first slide with proper layout context
       let offset = 0;
@@ -1554,9 +1855,13 @@ export class SlickSlider {
       
       // Set width on all slides: slideWidth minus the offset
       const slideWidthToSet = Math.max(0, this.state.slideWidth - offset);
-      slidesToStyle.forEach((slide) => {
-        setStyle(slide, 'width', `${slideWidthToSet}px`);
-      });
+      if (supportsCssVars) {
+        setStyle(this.state.slideTrack, '--slick-slide-width', `${slideWidthToSet}px`);
+      } else {
+        slidesToStyle.forEach((slide) => {
+          slide.style.width = `${slideWidthToSet}px`;
+        });
+      }
 
       // Calculate slide offset based on center mode settings (matching original jQuery logic)
       slideOffset = 0;
@@ -1591,7 +1896,11 @@ export class SlickSlider {
       targetLeft = (this.state.currentSlide * this.state.slideWidth * -1) + slideOffset;
     }
 
-    setStyle(this.state.slideTrack, 'width', `${trackWidth}px`);
+    if (supportsCssVars) {
+      setStyle(this.state.slideTrack, '--slick-track-width', `${trackWidth}px`);
+    } else {
+      setStyle(this.state.slideTrack, 'width', `${trackWidth}px`);
+    }
 
     if (this.options.rtl && !this.options.vertical && !this.options.fade) {
       targetLeft = -targetLeft;
@@ -1600,9 +1909,18 @@ export class SlickSlider {
     if (this.options.fade) {
       this.setFade();
     } else if (this.options.useTransform && this.state.transformsEnabled) {
-      translate3d(this.state.slideTrack, targetLeft, 0, 0);
+      if (supportsCssVars) {
+        setStyle(this.state.slideTrack, '--slick-track-x', `${targetLeft}px`);
+        setStyle(this.state.slideTrack, '--slick-track-y', '0px');
+      } else {
+        translate3d(this.state.slideTrack, targetLeft, 0, 0);
+      }
     } else {
-      setStyle(this.state.slideTrack, 'left', `${targetLeft}px`);
+      if (supportsCssVars) {
+        setStyle(this.state.slideTrack, '--slick-track-left', `${targetLeft}px`);
+      } else {
+        setStyle(this.state.slideTrack, 'left', `${targetLeft}px`);
+      }
     }
 
     this.updateSlideVisibility();
@@ -1610,6 +1928,7 @@ export class SlickSlider {
     this.updateArrows();
     this.updateNavigationVisibility();
     this.setHeight();
+    this.endPerformance(perf);
   }
 
   /**
@@ -1620,6 +1939,37 @@ export class SlickSlider {
     const marginLeft = parseFloat(styles.marginLeft) || 0;
     const marginRight = parseFloat(styles.marginRight) || 0;
     return marginLeft + marginRight;
+  }
+
+  /**
+   * Update focusability of elements within a slide
+   */
+  updateSlideFocusability(slide, isActive) {
+    if (!slide) return;
+
+    const focusableSelector = 'a, button, input, select, textarea, iframe, [tabindex], [contenteditable="true"], audio[controls], video[controls]';
+    const focusables = slide.querySelectorAll(focusableSelector);
+
+    focusables.forEach((element) => {
+      if (isActive) {
+        if (element.hasAttribute('data-slick-tabindex')) {
+          const previousValue = getAttribute(element, 'data-slick-tabindex');
+          if (previousValue === '') {
+            removeAttribute(element, 'tabindex');
+          } else {
+            setAttribute(element, 'tabindex', previousValue);
+          }
+          removeAttribute(element, 'data-slick-tabindex');
+        }
+        return;
+      }
+
+      if (!element.hasAttribute('data-slick-tabindex')) {
+        const existingValue = getAttribute(element, 'tabindex');
+        setAttribute(element, 'data-slick-tabindex', existingValue == null ? '' : existingValue);
+      }
+      setAttribute(element, 'tabindex', '-1');
+    });
   }
 
   /**
@@ -1637,11 +1987,16 @@ export class SlickSlider {
         removeClass(slide, 'slick-active');
         removeClass(slide, 'slick-current');
         removeClass(slide, 'slick-center');
+        setAttribute(slide, 'aria-hidden', 'true');
+        this.updateSlideFocusability(slide, false);
       });
       
       if (allSlides[this.state.currentSlide]) {
-        addClass(allSlides[this.state.currentSlide], 'slick-active');
-        addClass(allSlides[this.state.currentSlide], 'slick-current');
+        const currentSlide = allSlides[this.state.currentSlide];
+        addClass(currentSlide, 'slick-active');
+        addClass(currentSlide, 'slick-current');
+        removeAttribute(currentSlide, 'aria-hidden');
+        this.updateSlideFocusability(currentSlide, true);
       }
       
       // Trigger lazy load for fade mode
@@ -1990,10 +2345,121 @@ export class SlickSlider {
   }
 
   /**
+   * Checks if animations should be reduced based on user preference and settings
+   * @returns {boolean} - True if motion should be reduced
+   */
+  shouldReduceMotion() {
+    // Feature must be explicitly enabled via option
+    if (!this.options.respectReducedMotion) {
+      return false;
+    }
+    
+    // Check if user has enabled prefers-reduced-motion in OS settings
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+    
+    return false;
+  }
+
+  supportsCSSVariables() {
+    if (typeof window === 'undefined' || !window.CSS || !window.CSS.supports) {
+      return false;
+    }
+
+    return window.CSS.supports('color', 'var(--slick-test)');
+  }
+
+  startPerformance(label) {
+    if (!this.options.enablePerformanceMetrics || typeof performance === 'undefined') {
+      return null;
+    }
+
+    if (typeof performance.mark !== 'function' || typeof performance.measure !== 'function') {
+      return null;
+    }
+
+    const prefix = this.options.performanceMetricsPrefix || 'slick';
+    const id = this.state.performanceMarkId++;
+    const base = `${prefix}:${this.instanceId}:${label}:${id}`;
+    const start = `${base}:start`;
+    performance.mark(start);
+    return { base, start };
+  }
+
+  endPerformance(handle) {
+    if (!handle) return;
+    const end = `${handle.base}:end`;
+    performance.mark(end);
+    performance.measure(handle.base, handle.start, end);
+  }
+
+  /**
    * Handle keyboard navigation
+   * Supports:
+   * - Arrow Left/Right: Navigate to previous/next slide
+   * - Home: Jump to first slide
+   * - End: Jump to last slide
+   * - Enter/Space: Activate slide if focusOnSelect is enabled
    */
   handleKeydown(e) {
-    // Implementation in separate module
+    // Only handle if focus is within slider and we're not typing in an input
+    if (!this.element.contains(document.activeElement)) {
+      return;
+    }
+
+    // Don't handle if user is typing in an input field or contenteditable
+    const activeElement = document.activeElement;
+    if (activeElement && (
+      activeElement.tagName === 'INPUT' ||
+      activeElement.tagName === 'TEXTAREA' ||
+      activeElement.contentEditable === 'true'
+    )) {
+      return;
+    }
+
+    // Don't handle if modifier keys are pressed (allow browser shortcuts like Ctrl+C)
+    if (e.ctrlKey || e.metaKey || e.altKey) {
+      return;
+    }
+
+    const currentSlide = document.activeElement?.closest('.slick-slide');
+
+    switch(e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        this.changeSlide({ data: { message: 'prev' } });
+        break;
+
+      case 'ArrowRight':
+        e.preventDefault();
+        this.changeSlide({ data: { message: 'next' } });
+        break;
+
+      case 'Home':
+        e.preventDefault();
+        this.goTo(0);
+        break;
+
+      case 'End':
+        e.preventDefault();
+        this.goTo(this.state.slideCount - 1);
+        break;
+
+      case 'Enter':
+      case ' ':
+        // Only handle Enter/Space on slides if focusOnSelect is enabled
+        if (this.options.focusOnSelect && currentSlide) {
+          e.preventDefault();
+          // Navigate to this slide
+          const slides = [...this.element.querySelectorAll('.slick-slide:not(.slick-cloned)')];
+          const index = slides.indexOf(currentSlide);
+          if (index !== -1) {
+            this.goTo(index);
+          }
+        }
+        break;
+    }
   }
 
   /**
@@ -2291,6 +2757,14 @@ export class SlickSlider {
     if (this.boundMethods.handleResize) {
       window.removeEventListener('resize', this.boundMethods.handleResize);
     }
+    if (this.state.resizeObserver) {
+      this.state.resizeObserver.disconnect();
+      this.state.resizeObserver = null;
+    }
+    if (this.state.lazyLoadObserver) {
+      this.state.lazyLoadObserver.disconnect();
+      this.state.lazyLoadObserver = null;
+    }
     if (this.boundMethods.handleVisibilityChange) {
       document.removeEventListener('visibilitychange', this.boundMethods.handleVisibilityChange);
     }
@@ -2337,6 +2811,22 @@ export class SlickSlider {
     if (this.state.pauseButton && this.state.pauseButton.parentNode) {
       remove(this.state.pauseButton);
       this.state.pauseButton = null;
+    }
+    if (this.state.announcementElement && this.state.announcementElement.parentNode) {
+      remove(this.state.announcementElement);
+      this.state.announcementElement = null;
+    }
+    if (this.state.skipLinkElement && this.state.skipLinkElement.parentNode) {
+      remove(this.state.skipLinkElement);
+      this.state.skipLinkElement = null;
+    }
+    if (this.state.skipLinkTarget && this.state.skipLinkTarget.parentNode) {
+      remove(this.state.skipLinkTarget);
+      this.state.skipLinkTarget = null;
+    }
+    if (this.state.announcementTimer) {
+      clearTimeout(this.state.announcementTimer);
+      this.state.announcementTimer = null;
     }
     
     // Remove track
@@ -2431,10 +2921,125 @@ export class SlickSlider {
   /**
    * Load all unloaded images in a given scope
    */
+  handleLazyLoadStart(img) {
+    if (!img) return;
+
+    setAttribute(img, 'aria-busy', 'true');
+
+    if (!this.options.lazyLoadLoadingIndicator) {
+      return;
+    }
+
+    const parent = img.parentNode;
+    if (parent && !parent.querySelector('[data-slick-lazy-loading]')) {
+      const message = document.createElement('span');
+      addClass(message, 'slick-lazyload-loading-message');
+      setAttribute(message, 'data-slick-lazy-loading', 'true');
+      message.textContent = this.options.lazyLoadLoadingText || 'Loading image';
+      appendChild(parent, message);
+    }
+  }
+
+  clearLazyLoadIndicator(img) {
+    if (!img) return;
+    removeAttribute(img, 'aria-busy');
+
+    if (!this.options.lazyLoadLoadingIndicator) {
+      return;
+    }
+
+    const parent = img.parentNode;
+    const message = parent ? parent.querySelector('[data-slick-lazy-loading]') : null;
+    if (message) {
+      remove(message);
+    }
+  }
+
+  handleLazyLoadError(img, imageSource) {
+    if (!img) return;
+
+    // Mark as failed
+    removeAttribute(img, 'data-lazy');
+    removeAttribute(img, 'data-srcset');
+    removeAttribute(img, 'data-sizes');
+    removeClass(img, 'slick-loading');
+    addClass(img, 'slick-lazyload-error');
+    this.clearLazyLoadIndicator(img);
+
+    if (this.options.lazyLoadErrorVisible) {
+      const parent = img.parentNode;
+      if (parent && !parent.querySelector('[data-slick-lazy-error]')) {
+        const message = document.createElement('span');
+        addClass(message, 'slick-lazyload-error-message');
+        setAttribute(message, 'data-slick-lazy-error', 'true');
+        message.textContent = this.options.lazyLoadErrorMessage || 'Image failed to load';
+        appendChild(parent, message);
+      }
+    }
+
+    if (this.options.lazyLoadErrorAnnounce && this.state.announcementElement) {
+      this.announce(this.options.lazyLoadErrorMessage || 'Image failed to load', true);
+    }
+
+    this.emit('lazyLoadError', { image: img, imageSource });
+  }
+
+  fadeImageOut(img, startTime, fadeDuration) {
+    if (this.shouldReduceMotion()) {
+      setStyle(img, 'opacity', '0');
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / fadeDuration, 1);
+        setStyle(img, 'opacity', String(1 - progress));
+
+        if (progress >= 1) {
+          resolve();
+        } else {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    });
+  }
+
+  fadeImageIn(img, duration = 200) {
+    if (this.shouldReduceMotion()) {
+      setStyle(img, 'opacity', '1');
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      setStyle(img, 'opacity', '0');
+      const startTime = performance.now();
+
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        setStyle(img, 'opacity', String(progress));
+
+        if (progress >= 1) {
+          resolve();
+        } else {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    });
+  }
+
   loadImages(imagesScope) {
     const lazyImages = selectAll('img[data-lazy]', imagesScope);
     
     lazyImages.forEach(img => {
+      if (this.state.lazyLoadObserver) {
+        this.state.lazyLoadObserver.unobserve(img);
+      }
       const imageSource = getAttribute(img, 'data-lazy');
       const imageSrcSet = getAttribute(img, 'data-srcset');
       const imageSizes = getAttribute(img, 'data-sizes') || getAttribute(this.state.slideTrack, 'data-sizes');
@@ -2445,20 +3050,11 @@ export class SlickSlider {
       const imageToLoad = new Image();
       
       imageToLoad.onload = () => {
-        // Fade out current image
-        const currentOpacity = window.getComputedStyle(img).opacity || '1';
         const fadeDuration = 100;
-        
-        // Animate opacity: 0
-        const startTime = Date.now();
-        const fadeOutInterval = setInterval(() => {
-          const elapsed = Date.now() - startTime;
-          const progress = Math.min(elapsed / fadeDuration, 1);
-          setStyle(img, 'opacity', String(1 - progress));
-          
-          if (progress >= 1) {
-            clearInterval(fadeOutInterval);
-            
+        const startTime = performance.now();
+
+        this.fadeImageOut(img, startTime, fadeDuration)
+          .then(() => {
             // Set proper image attributes
             if (imageSrcSet) {
               setAttribute(img, 'srcset', imageSrcSet);
@@ -2466,48 +3062,129 @@ export class SlickSlider {
             if (imageSizes) {
               setAttribute(img, 'sizes', imageSizes);
             }
-            
+
             // Set src
             setAttribute(img, 'src', imageSource);
-            
+
             // Fade in
-            const fadeInStart = Date.now();
-            const fadeInDuration = 200;
-            const fadeInInterval = setInterval(() => {
-              const inElapsed = Date.now() - fadeInStart;
-              const inProgress = Math.min(inElapsed / fadeInDuration, 1);
-              setStyle(img, 'opacity', String(inProgress));
-              
-              if (inProgress >= 1) {
-                clearInterval(fadeInInterval);
-                // Clean up data attributes
-                removeAttribute(img, 'data-lazy');
-                removeAttribute(img, 'data-srcset');
-                removeAttribute(img, 'data-sizes');
-                removeClass(img, 'slick-loading');
-                
-                // Trigger custom event
-                this.emit('lazyLoaded', { image: img, imageSource });
-              }
-            });
-          }
-        });
+            return this.fadeImageIn(img, 200);
+          })
+          .then(() => {
+            // Clean up data attributes
+            removeAttribute(img, 'data-lazy');
+            removeAttribute(img, 'data-srcset');
+            removeAttribute(img, 'data-sizes');
+            removeClass(img, 'slick-loading');
+            this.clearLazyLoadIndicator(img);
+
+            // Trigger custom event
+            this.emit('lazyLoaded', { image: img, imageSource });
+          });
       };
       
       imageToLoad.onerror = () => {
-        // Mark as failed
-        removeAttribute(img, 'data-lazy');
-        removeClass(img, 'slick-loading');
-        addClass(img, 'slick-lazyload-error');
-        
-        // Trigger error event
-        this.emit('lazyLoadError', { image: img, imageSource });
+        this.handleLazyLoadError(img, imageSource);
       };
       
       // Add loading class
       addClass(img, 'slick-loading');
+      this.handleLazyLoadStart(img);
       
       // Start loading
+      imageToLoad.src = imageSource;
+    });
+  }
+
+  initLazyLoadObserver() {
+    if (!('IntersectionObserver' in window)) return false;
+    if (!this.state.slideTrack) return false;
+    if (this.state.lazyLoadObserver) return true;
+
+    const rootMargin = this.options.lazyLoadIntersectionRootMargin || '200px 0px';
+    const thresholdValue = Number(this.options.lazyLoadIntersectionThreshold);
+    const threshold = Number.isFinite(thresholdValue) ? thresholdValue : 0.01;
+
+    this.state.lazyLoadObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const img = entry.target;
+        if (!img || !getAttribute(img, 'data-lazy')) {
+          this.state.lazyLoadObserver.unobserve(img);
+          return;
+        }
+        this.state.lazyLoadObserver.unobserve(img);
+        this.loadImages(img);
+      });
+    }, {
+      root: this.state.slideList || null,
+      rootMargin,
+      threshold
+    });
+
+    this.observeLazyImages();
+    return true;
+  }
+
+  observeLazyImages() {
+    if (!this.state.lazyLoadObserver || !this.state.slideTrack) return;
+    const lazyImages = selectAll('img[data-lazy]', this.state.slideTrack);
+    lazyImages.forEach(img => this.state.lazyLoadObserver.observe(img));
+  }
+
+  loadProgressiveImage(img, tryCount = 1) {
+    return new Promise((resolve) => {
+      if (!img) {
+        resolve();
+        return;
+      }
+
+      const imageSource = getAttribute(img, 'data-lazy');
+      const imageSrcSet = getAttribute(img, 'data-srcset');
+      const imageSizes = getAttribute(img, 'data-sizes') || getAttribute(this.state.slideTrack, 'data-sizes');
+
+      if (!imageSource) {
+        resolve();
+        return;
+      }
+
+      const imageToLoad = new Image();
+
+      imageToLoad.onload = () => {
+        if (imageSrcSet) {
+          setAttribute(img, 'srcset', imageSrcSet);
+        }
+        if (imageSizes) {
+          setAttribute(img, 'sizes', imageSizes);
+        }
+
+        setAttribute(img, 'src', imageSource);
+        removeAttribute(img, 'data-lazy');
+        removeAttribute(img, 'data-srcset');
+        removeAttribute(img, 'data-sizes');
+        removeClass(img, 'slick-loading');
+        this.clearLazyLoadIndicator(img);
+
+        if (this.options.adaptiveHeight === true) {
+          this.setPosition();
+        }
+
+        this.emit('lazyLoaded', { image: img, imageSource });
+        resolve();
+      };
+
+      imageToLoad.onerror = () => {
+        if (tryCount < 3) {
+          setTimeout(() => {
+            this.loadProgressiveImage(img, tryCount + 1).then(resolve);
+          }, 500);
+        } else {
+          this.handleLazyLoadError(img, imageSource);
+          resolve();
+        }
+      };
+
+      addClass(img, 'slick-loading');
+      this.handleLazyLoadStart(img);
       imageToLoad.src = imageSource;
     });
   }
@@ -2515,64 +3192,36 @@ export class SlickSlider {
   /**
    * Progressive lazy load - loads images one at a time as they appear
    */
-  progressiveLazyLoad(tryCount = 1) {
+  progressiveLazyLoad() {
     if (!this.options.lazyLoad || this.options.lazyLoad !== 'progressive') return;
-    
-    const allLazyImages = selectAll('img[data-lazy]', this.state.slideTrack);
-    
-    if (allLazyImages.length === 0) return;
-    
-    const img = allLazyImages[0];
-    const imageSource = getAttribute(img, 'data-lazy');
-    const imageSrcSet = getAttribute(img, 'data-srcset');
-    const imageSizes = getAttribute(img, 'data-sizes') || getAttribute(this.state.slideTrack, 'data-sizes');
-    
-    const imageToLoad = new Image();
-    
-    imageToLoad.onload = () => {
-      if (imageSrcSet) {
-        setAttribute(img, 'srcset', imageSrcSet);
-      }
-      if (imageSizes) {
-        setAttribute(img, 'sizes', imageSizes);
-      }
-      
-      setAttribute(img, 'src', imageSource);
-      removeAttribute(img, 'data-lazy');
-      removeAttribute(img, 'data-srcset');
-      removeAttribute(img, 'data-sizes');
-      removeClass(img, 'slick-loading');
-      
-      if (this.options.adaptiveHeight === true) {
-        this.setPosition();
-      }
-      
-      this.emit('lazyLoaded', { image: img, imageSource });
-      
-      // Load next image
-      this.progressiveLazyLoad(1);
-    };
-    
-    imageToLoad.onerror = () => {
-      if (tryCount < 3) {
-        // Retry up to 3 times with delay
-        setTimeout(() => {
-          this.progressiveLazyLoad(tryCount + 1);
-        }, 500);
-      } else {
-        // Give up after 3 tries
-        removeAttribute(img, 'data-lazy');
-        removeClass(img, 'slick-loading');
-        addClass(img, 'slick-lazyload-error');
-        
-        this.emit('lazyLoadError', { image: img, imageSource });
-        
-        // Try next image
-        this.progressiveLazyLoad(1);
-      }
-    };
-    
-    imageToLoad.src = imageSource;
+
+    if (!this.state.lazyLoadQueue || this.state.lazyLoadQueue.length === 0) {
+      const allLazyImages = selectAll('img[data-lazy]:not(.slick-loading)', this.state.slideTrack);
+      if (allLazyImages.length === 0) return;
+      this.state.lazyLoadQueue = Array.from(allLazyImages);
+    }
+
+    const limit = Math.max(1, Number(this.options.lazyLoadParallelLimit) || 1);
+
+    while (this.state.lazyLoadInFlight < limit && this.state.lazyLoadQueue.length) {
+      const img = this.state.lazyLoadQueue.shift();
+      this.state.lazyLoadInFlight += 1;
+
+      this.loadProgressiveImage(img)
+        .finally(() => {
+          this.state.lazyLoadInFlight -= 1;
+
+          if (this.state.lazyLoadQueue && this.state.lazyLoadQueue.length) {
+            this.progressiveLazyLoad();
+            return;
+          }
+
+          if (this.state.lazyLoadInFlight === 0) {
+            this.state.lazyLoadQueue = null;
+            this.progressiveLazyLoad();
+          }
+        });
+    }
   }
 
   /**
