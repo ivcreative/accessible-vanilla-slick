@@ -566,7 +566,7 @@ var slickModule = (() => {
         } else if (!useObserver) {
           this.lazyLoad();
         }
-        this.dispatcher.addEventListener("afterChange", () => {
+        this.dispatcher.on("afterChange", () => {
           if (this.options.lazyLoad === "progressive") {
             this.progressiveLazyLoad();
           } else if (useObserver) {

@@ -364,7 +364,7 @@ export class SlickSlider {
       }
 
       // Load images when slides change
-      this.dispatcher.addEventListener('afterChange', () => {
+      this.dispatcher.on('afterChange', () => {
         if (this.options.lazyLoad === 'progressive') {
           this.progressiveLazyLoad();
         } else if (useObserver) {
