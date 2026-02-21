@@ -1378,20 +1378,30 @@ JS
       var slideIndex = 1;
 
       // Add Slide button
-      document.querySelector('.js-add-slide').addEventListener('click', function() {
-        slideIndex++;
-        const newSlide = document.createElement('div');
-        newSlide.innerHTML = '<p>' + slideIndex + '</p>';
-        addRemoveSlider.slickAdd(newSlide);
-      });
+      if (addRemoveSlider) {
+        const addBtn = document.querySelector('.js-add-slide');
+        if (addBtn) {
+          addBtn.addEventListener('click', function() {
+            slideIndex++;
+            const newSlide = document.createElement('div');
+            newSlide.innerHTML = '<p>' + slideIndex + '</p>';
+            addRemoveSlider.slickAdd(newSlide);
+          });
+        }
+      }
 
       // Remove Slide button
-      document.querySelector('.js-remove-slide').addEventListener('click', function() {
-        addRemoveSlider.slickRemove(slideIndex - 1);
-        if (slideIndex !== 0){
-          slideIndex--;
+      if (addRemoveSlider) {
+        const removeBtn = document.querySelector('.js-remove-slide');
+        if (removeBtn) {
+          removeBtn.addEventListener('click', function() {
+            addRemoveSlider.slickRemove(slideIndex - 1);
+            if (slideIndex !== 0){
+              slideIndex--;
+            }
+          });
         }
-      });
+      }
 
     // Filtering
     const filteringSlider = initSlider(
@@ -1407,17 +1417,22 @@ JS
       var filtered = false;
 
       // Filter Slides / Unfilter Slides button
-      document.querySelector('.js-filter').addEventListener('click', function() {
-        if (filtered === false) {
-          filteringSlider.slickFilter(':even');
-          this.textContent = 'Unfilter Slides';
-          filtered = true;
-        } else {
-          filteringSlider.slickUnfilter();
-          this.textContent = 'Filter Slides';
-          filtered = false;
+      if (filteringSlider) {
+        const filterBtn = document.querySelector('.js-filter');
+        if (filterBtn) {
+          filterBtn.addEventListener('click', function() {
+            if (filtered === false) {
+              filteringSlider.slickFilter(':even');
+              this.textContent = 'Unfilter Slides';
+              filtered = true;
+            } else {
+              filteringSlider.slickUnfilter();
+              this.textContent = 'Filter Slides';
+              filtered = false;
+            }
+          });
         }
-      });
+      }
 
     // Slider Syncing
     // a. Main slider
