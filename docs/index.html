@@ -1136,12 +1136,14 @@ JS
       function initSlider(selector, options) {
         var element = document.querySelector(selector);
         if (!element) {
+          console.warn('Slider element not found:', selector);
           return null;
         }
 
         try {
           return new SlickSliderCtor(element, options || {});
         } catch (error) {
+          console.error('Error initializing slider:', selector, error);
           return null;
         }
       }
@@ -1376,6 +1378,7 @@ JS
     );
 
       var slideIndex = 1;
+      console.log('addRemoveSlider initialized:', !!addRemoveSlider);
 
       // Add Slide button
       if (addRemoveSlider) {
@@ -1415,6 +1418,7 @@ JS
     );
 
       var filtered = false;
+      console.log('filteringSlider initialized:', !!filteringSlider);
 
       // Filter Slides / Unfilter Slides button
       if (filteringSlider) {
