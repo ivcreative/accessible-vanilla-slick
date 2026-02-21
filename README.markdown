@@ -1,4 +1,4 @@
-accessible-slick
+accessible-vanilla-slick
 ----------------
 
 _the last (accessible) carousel you'll ever need_
