@@ -1674,6 +1674,9 @@ var slickModule = (() => {
         if (supportsCssVars) {
           setStyle(this.state.slideTrack, "--slick-track-width", `${trackWidth}px`);
           setStyle(this.state.slideTrack, "--slick-slide-width", "auto");
+          allSlidesInDOM.forEach((slide) => {
+            slide.style.width = "";
+          });
         } else {
           setStyle(this.state.slideTrack, "width", `${trackWidth}px`);
         }
@@ -1732,6 +1735,9 @@ var slickModule = (() => {
         const slideWidthToSet = Math.max(0, this.state.slideWidth - offset);
         if (supportsCssVars) {
           setStyle(this.state.slideTrack, "--slick-slide-width", `${slideWidthToSet}px`);
+          slidesToStyle.forEach((slide) => {
+            slide.style.width = "";
+          });
         } else {
           slidesToStyle.forEach((slide) => {
             slide.style.width = `${slideWidthToSet}px`;
@@ -1774,12 +1780,15 @@ var slickModule = (() => {
         if (supportsCssVars) {
           setStyle(this.state.slideTrack, "--slick-track-x", `${targetLeft}px`);
           setStyle(this.state.slideTrack, "--slick-track-y", "0px");
+          this.state.slideTrack.style.transform = "";
+          this.state.slideTrack.style.webkitTransform = "";
         } else {
           translate3d(this.state.slideTrack, targetLeft, 0, 0);
         }
       } else {
         if (supportsCssVars) {
           setStyle(this.state.slideTrack, "--slick-track-left", `${targetLeft}px`);
+          this.state.slideTrack.style.left = "";
         } else {
           setStyle(this.state.slideTrack, "left", `${targetLeft}px`);
         }
@@ -2125,10 +2134,7 @@ var slickModule = (() => {
       return false;
     }
     supportsCSSVariables() {
-      if (typeof window === "undefined" || !window.CSS || !window.CSS.supports) {
-        return false;
-      }
-      return window.CSS.supports("color", "var(--slick-test)");
+      return false;
     }
     startPerformance(label) {
       if (!this.options.enablePerformanceMetrics || typeof performance === "undefined") {

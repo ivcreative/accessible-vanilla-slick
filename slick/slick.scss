@@ -87,25 +87,10 @@
     transform: translate3d(0, 0, 0);
 }
 
-.slick-slider .slick-track {
-    -webkit-transform: translate3d(var(--slick-track-x, 0px), var(--slick-track-y, 0px), 0);
-    -moz-transform: translate3d(var(--slick-track-x, 0px), var(--slick-track-y, 0px), 0);
-    -ms-transform: translate3d(var(--slick-track-x, 0px), var(--slick-track-y, 0px), 0);
-    -o-transform: translate3d(var(--slick-track-x, 0px), var(--slick-track-y, 0px), 0);
-    transform: translate3d(var(--slick-track-x, 0px), var(--slick-track-y, 0px), 0);
-}
-
 .slick-track {
     position: relative;
-    left: var(--slick-track-left, 0px);
-    top: var(--slick-track-top, 0px);
-    width: var(--slick-track-width, auto);
-    --slick-track-x: 0px;
-    --slick-track-y: 0px;
-    --slick-track-left: 0px;
-    --slick-track-top: 0px;
-    --slick-track-width: auto;
-    --slick-slide-width: auto;
+    left: 0;
+    top: 0;
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -126,7 +111,6 @@
 }
 .slick-slide {
     float: left;
-    width: var(--slick-slide-width, auto);
     height: 100%;
     min-height: 1px;
     [dir="rtl"] & {

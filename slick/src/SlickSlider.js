@@ -1761,6 +1761,10 @@ export class SlickSlider {
       if (supportsCssVars) {
         setStyle(this.state.slideTrack, '--slick-track-width', `${trackWidth}px`);
         setStyle(this.state.slideTrack, '--slick-slide-width', 'auto');
+        // Clear inline widths to let CSS variables take effect
+        allSlidesInDOM.forEach(slide => {
+          slide.style.width = '';
+        });
       } else {
         setStyle(this.state.slideTrack, 'width', `${trackWidth}px`);
       }
@@ -1857,6 +1861,10 @@ export class SlickSlider {
       const slideWidthToSet = Math.max(0, this.state.slideWidth - offset);
       if (supportsCssVars) {
         setStyle(this.state.slideTrack, '--slick-slide-width', `${slideWidthToSet}px`);
+        // Clear inline widths to let CSS variables take effect
+        slidesToStyle.forEach((slide) => {
+          slide.style.width = '';
+        });
       } else {
         slidesToStyle.forEach((slide) => {
           slide.style.width = `${slideWidthToSet}px`;
@@ -1912,12 +1920,17 @@ export class SlickSlider {
       if (supportsCssVars) {
         setStyle(this.state.slideTrack, '--slick-track-x', `${targetLeft}px`);
         setStyle(this.state.slideTrack, '--slick-track-y', '0px');
+        // Clear inline transform to let CSS variables take effect
+        this.state.slideTrack.style.transform = '';
+        this.state.slideTrack.style.webkitTransform = '';
       } else {
         translate3d(this.state.slideTrack, targetLeft, 0, 0);
       }
     } else {
       if (supportsCssVars) {
         setStyle(this.state.slideTrack, '--slick-track-left', `${targetLeft}px`);
+        // Clear inline left positioning to let CSS variables take effect
+        this.state.slideTrack.style.left = '';
       } else {
         setStyle(this.state.slideTrack, 'left', `${targetLeft}px`);
       }
@@ -2363,11 +2376,9 @@ export class SlickSlider {
   }
 
   supportsCSSVariables() {
-    if (typeof window === 'undefined' || !window.CSS || !window.CSS.supports) {
-      return false;
-    }
-
-    return window.CSS.supports('color', 'var(--slick-test)');
+    // Disabled: CSS variables approach needs more work to handle all edge cases
+    // Reverting to proven inline styles approach for v1.2.0
+    return false;
   }
 
   startPerformance(label) {
