@@ -426,7 +426,7 @@ td code {
   .alt-background th code,
   .alt-background td code {
     color: white;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.8);
   }
 
 
@@ -969,7 +969,7 @@ code {
   background: var(--bg-dark);
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
-  color: #a5d6ff;
+  color: #d4e4ff;
 }
 
 pre {

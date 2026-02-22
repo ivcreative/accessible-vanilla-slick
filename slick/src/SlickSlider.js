@@ -428,7 +428,6 @@ export class SlickSlider {
       const clone = this.state.slides[slideIndex].cloneNode(true);
       addClass(clone, 'slick-cloned');
       setAttribute(clone, 'aria-hidden', 'true');
-      setAttribute(clone, 'tabindex', '-1');
       setAttribute(clone, 'data-slick-index', String(slideIndex - this.state.slideCount));
       this.state.slideTrack.insertBefore(clone, this.state.slideTrack.firstChild);
     }
@@ -444,7 +443,6 @@ export class SlickSlider {
       const clone = this.state.slides[slideIndex].cloneNode(true);
       addClass(clone, 'slick-cloned');
       setAttribute(clone, 'aria-hidden', 'true');
-      setAttribute(clone, 'tabindex', '-1');
       setAttribute(clone, 'data-slick-index', String(i + this.state.slideCount));
       appendChild(this.state.slideTrack, clone);
     }
