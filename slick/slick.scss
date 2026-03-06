@@ -2,33 +2,52 @@
 
 .slick-skip-link {
     position: absolute;
-    left: -9999px;
+    left: 0;
     top: 0;
     width: 1px;
     height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
     overflow: hidden;
+    white-space: nowrap;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     z-index: 10000;
     background: #000;
     color: #fff;
-    padding: 8px 12px;
     text-decoration: none;
 }
 
 .slick-skip-link:focus,
 .slick-skip-link:active {
-    left: 10px;
-    top: 10px;
+    position: static;
+    left: auto;
+    top: auto;
     width: auto;
     height: auto;
+    margin: 0 0 8px;
+    padding: 8px 12px;
+    border: 0;
     overflow: visible;
+    white-space: normal;
+    clip: auto;
+    clip-path: none;
 }
 
 .slick-skip-link--visible {
-    left: 10px;
-    top: 10px;
+    position: static;
+    left: auto;
+    top: auto;
     width: auto;
     height: auto;
+    margin: 0 0 8px;
+    padding: 8px 12px;
+    border: 0;
     overflow: visible;
+    white-space: normal;
+    clip: auto;
+    clip-path: none;
 }
 
 .slick-lazyload-error {
