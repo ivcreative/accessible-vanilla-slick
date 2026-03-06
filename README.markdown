@@ -18,7 +18,7 @@ Also check out this [collection of ready-to-use demos on CodePen](https://codepe
 - Motion sensitivity support with `respectReducedMotion`.
 - Full keyboard navigation (Arrow Left/Right, Home, End).
 - Aria-live announcements with per-slide `data-announce` and optional descriptions.
-- Skip link support for keyboard users.
+- Optional skip link support for keyboard users.
 - Lazy load improvements: RAF fades, loading/error indicators, progressive parallel loading, and IntersectionObserver support.
 - Responsive + layout optimizations with ResizeObserver and CSS variable positioning.
 - Optional `performance.mark()`/`performance.measure()` metrics for `init`, `changeSlide`, and `setPosition`.
@@ -39,17 +39,17 @@ Just add a link to the CSS file in your `<head>`:
 
 ```html
 <!-- Add the core slick.min.css -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/slick.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick.min.css">
 
 <!-- Add ONE of the theme files (accessible version or original) -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/accessible-slick-theme.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/accessible-slick-theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick-theme.min.css">
 ```
 
 Then, before your closing `<body>` tag add:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.3/slick/dist/slick.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick.min.js"></script>
 ```
 
 #### Package Managers
@@ -182,7 +182,7 @@ performanceMetricsPrefix | string | 'slick' | Prefix used for performance entrie
 pauseIcon | string (html \| jQuery selector) \| object (DOM node \| jQuery object) | `<span class="slick-pause-icon" aria-hidden="true"></span>` | Custom element to use as the "pause" icon inside the autoplay pause/play toggle button, when `autoplay` is enabled.
 playIcon | string (html \| jQuery selector) \| object (DOM node \| jQuery object) | `<span class="slick-play-icon" aria-hidden="true"></span>` | Custom element to use as the "play" icon inside the autoplay pause/play toggle button, when `autoplay` is enabled.
 regionLabel | string | 'carousel' | Text to use for the `aria-label` that is placed on the wrapper.
-useSkipLink | boolean | true | Adds a skip link before the carousel so keyboard users can bypass it quickly.
+useSkipLink | boolean | false | Adds a skip link before the carousel so keyboard users can bypass it quickly.
 skipLinkText | string | 'Skip carousel' | Text for the skip link (e.g. `Skip featured carousel`).
 skipLinkVisible | boolean | false | When true, the skip link is always visible; otherwise it is visually hidden until focused.
 useGroupRole | boolean | true | Controls whether `role="group"` and an `aria-label` are applied to each slide.

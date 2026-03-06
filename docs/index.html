@@ -5,8 +5,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎠</text></svg>?v=2" type="image/svg+xml">
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.4/slick/dist/slick.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.4/slick/dist/accessible-slick-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/accessible-slick-theme.min.css">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="a11y-dark.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -116,7 +116,7 @@
           <li>Each slide has <code>role="group"</code> with a numbered <code>aria-label</code>.</li>
           <li>Autoplay now automatically comes with a pause/play toggle button.</li>
           <li>No more tab markup! Just simple, semantic elements like lists and buttons.</li>
-          <li>Each carousel now includes a skip link so keyboard users can bypass it quickly.</li>
+          <li>Skip links are available as an opt-in feature so keyboard users can bypass carousels when enabled.</li>
           <li>The <code>accessibility</code> setting has been deprecated since this package is accessible by default!</li>
           <li>Keyboard navigation now supports <code>Arrow Left/Right</code>, <code>Home</code>, and <code>End</code> for slide control.</li>
           <li>Slide changes are now announced to screen readers with an aria-live region, with optional per-slide <code>data-announce</code> text.</li>
@@ -135,7 +135,7 @@
           <li><strong>Motion sensitivity support:</strong> new <code>respectReducedMotion: true</code> option honors OS <code>prefers-reduced-motion</code>.</li>
           <li><strong>Keyboard navigation:</strong> <code>Arrow Left/Right</code>, <code>Home</code>, and <code>End</code> are now supported for slide control.</li>
           <li><strong>Screen reader announcements:</strong> aria-live slide updates with optional per-slide <code>data-announce</code>, <code>data-announce-prefix</code>, and <code>data-announce-description</code>.</li>
-          <li><strong>Skip link support:</strong> a built-in skip link lets keyboard users jump past the carousel.</li>
+          <li><strong>Skip link support:</strong> opt-in skip links let keyboard users jump past the carousel.</li>
           <li><strong>Dots and focus improvements:</strong> current dots use <code>aria-current</code> and fade mode prevents hidden slides from receiving focus.</li>
           <li><strong>Lazy loading upgrades:</strong> requestAnimationFrame fade, visible loading/error states, progressive parallel loading, and IntersectionObserver support.</li>
           <li><strong>Responsive + layout:</strong> ResizeObserver support and CSS variable positioning for smoother reflows.</li>
@@ -362,6 +362,30 @@
   &lt;div&gt;5&lt;/div&gt;
   &lt;div&gt;6&lt;/div&gt;
 &lt;/div&gt;</code></pre>
+
+          <hr aria-hidden="true">
+
+        <h3 id="skip-link-opt-in" tabindex="-1">Skip Link (Opt-in)</h3>
+
+        <p>Skip links are now disabled by default. Enable them per carousel with <code>useSkipLink: true</code>.</p>
+
+        <div class="slider skip-link-opt-in">
+          <div><p>1</p></div>
+          <div><p>2</p></div>
+          <div><p>3</p></div>
+          <div><p>4</p></div>
+        </div>
+
+        <pre><code class="language-javascript">const slider = new slickModule.SlickSlider(
+  document.querySelector('.skip-link-opt-in'),
+  {
+    dots: true,
+    infinite: true,
+    slidesToShow: 1,
+    useSkipLink: true,
+    skipLinkText: 'Skip this demo carousel'
+  }
+);</code></pre>
 
           <hr aria-hidden="true">
 
@@ -980,7 +1004,7 @@ const sliderNav = new slickModule.SlickSlider(
             <tr>
               <th scope="row">useSkipLink</th>
               <td><b aria-hidden="true">Type:</b> boolean</td>
-              <td><b aria-hidden="true">Default:</b> true</td>
+              <td><b aria-hidden="true">Default:</b> false</td>
               <td>🆕 <strong>v1.2.0+</strong> — Adds a skip link before the carousel so keyboard users can bypass it quickly.</td>
             </tr>
             <tr>
@@ -1094,22 +1118,22 @@ const sliderNav = new slickModule.SlickSlider(
         <p>You can also use accessible-slick with the jsDelivr CDN!</p>
 
         <pre><code class="language-markup">CSS
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.4/slick/dist/slick.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick.min.css&quot;&gt;
 
 Theme CSS option #1 (original)
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.4/slick/dist/slick-theme.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick-theme.min.css&quot;&gt;
 
 Theme CSS option #2 (accessible)
-&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.4/slick/dist/accessible-slick-theme.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/accessible-slick-theme.min.css&quot;&gt;
 
 JS
-&lt;script type=&quot;text/javascript&quot; src=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.4/slick/dist/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick.min.js&quot;&gt;&lt;/script&gt;</code></pre>
       </div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.21.0/prism.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.4/slick/dist/slick.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ivcreative/accessible-vanilla-slick@1.2.6/slick/dist/slick.min.js"></script>
 
   <script>
     // Wait a tiny bit to ensure slick.min.js is fully loaded
@@ -1268,6 +1292,18 @@ JS
 
     // Data Attribute Settings
     const slider6 = initSlider('.data', {});
+
+    // Skip Link (opt-in)
+    const skipLinkOptInSlider = initSlider(
+      '.skip-link-opt-in',
+      {
+        dots: true,
+        infinite: true,
+        slidesToShow: 1,
+        useSkipLink: true,
+        skipLinkText: 'Skip this demo carousel'
+      }
+    );
 
     // Center Mode
     const slider7 = initSlider(

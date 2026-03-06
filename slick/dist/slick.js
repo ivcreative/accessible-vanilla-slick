@@ -430,7 +430,7 @@ var slickModule = (() => {
       announceSlideDescription: false,
       announcementLive: "polite",
       announcementPrefix: "Slide",
-      useSkipLink: true,
+      useSkipLink: false,
       skipLinkText: "Skip carousel",
       skipLinkVisible: false
     };
